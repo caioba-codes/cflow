@@ -12,30 +12,36 @@ Read [FLOW.md](FLOW.md) for the canonical Cflow stages. Do not invent a second s
 The short shape is:
 
 1. Understand and research the task.
-2. Scope a small branch.
-3. Implement the minimal behavior.
-4. Verify locally with objective checks and by driving the real flow end to end.
-5. Open a PR to `staging`.
-6. Run review loops (default-on code review; security review when the diff warrants it) until clean enough or blocked.
-7. Merge to `staging` and validate there.
-8. Run cleanup as a separate pass when useful.
-9. Harden recurring issues into automation (lint/CI/skill/`REVIEW.md`) as a triggered pass.
-10. Promote `staging` to `main`.
+2. Write the plan; for non-trivial plans, pass the cross-model plan review gate (two rival-lab models check the plan against the real code) before any code is written.
+3. Scope a small branch.
+4. Implement the minimal behavior.
+5. Verify locally with objective checks and by driving the real flow end to end — user-facing changes are graded by a fresh agent that didn't write the code.
+6. Open a PR to `staging`.
+7. Run the review tier the diff warrants (trivial → CI only; standard → cross-model review; high-stakes → greploop + cross-model; security review when triggered) — capped at two rounds per reviewer.
+8. Merge to `staging` and validate there.
+9. Run cleanup as a separate pass when useful.
+10. Harden recurring issues into automation (lint/CI/skill/`REVIEW.md`) as a triggered pass.
+11. Promote `staging` to `main`.
 
 ## Operating Rules
 
 - Keep work PR-sized. Split broad work into stacked branches.
 - Research before editing. Read the relevant code, tests, schema, migrations, and any plan/spec the user names.
 - Write plans in the two-audience format defined in [PLANS.md](PLANS.md): a plain-language Spec for the human reviewer (which must include a "How it will be built" architecture explanation), a separator, then the agent-facing Plan. The Spec must be readable without opening the code.
-- Every plan header declares who implements what in an `Execution:` line, per branch/PR (format in [PLANS.md](PLANS.md)). Default split under the current harness roles: backend/mechanical work → the executor (Codex, headless `codex exec`); design-heavy frontend/UX → the orchestrator (Claude) directly. One writer per branch at a time; the orchestrator owns review gates and merges regardless of assignment.
+- Every plan header declares who implements what in an `Execution:` line, per branch/PR (format in [PLANS.md](PLANS.md)). Default split under the current harness roles: backend/mechanical work → the executor (Codex, headless `codex exec`); taste-sensitive UI (new pages, layout, visual polish, wording) → the designer (Opus 4.8); routine frontend plumbing → the executor like any other mechanical work. The orchestrator does not implement by default — typing burns the attention it needs for judgment; it writes code only as a declared exception in the `Execution:` line. One writer per branch at a time; the orchestrator owns review gates and merges regardless of assignment.
+- Before implementing a non-trivial plan, run the cross-model plan review gate (`plan-review` in `cross` mode): two models from rival labs independently check the plan against the real code — named files and functions exist, steps don't contradict, claimed parallelism is real. Cap: two plan revisions, then the human decides. A plan error caught here costs minutes; after implementation it costs hours.
 - Use plan filenames as the implementation-status indicator: `<NNN>-<slug>.md` while any scoped work remains, and `<NNN>-DONE-<slug>.md` only after the entire plan is implemented and validated. Update references when renaming; review approval or one finished PR does not make a multi-part plan `DONE`.
 - Use `source-code-context` before integrating nontrivial package, SDK, API client, or framework behavior.
 - Build the smallest working behavior before cleanup or broad refactors.
 - Verify behavior, don't assume it. When a change has a runtime surface, drive the real flow end to end (invoke `verify`) — not just unit checks — before opening the PR.
+- The builder never grades its own work. For user-facing changes, end-to-end verification is done by a fresh agent that did not write the code, instructed to prove each acceptance criterion broken — including empty, loading, and error states, mobile widths, and the browser console — not to confirm it works.
 - Treat tests, lint, typechecks, browser checks, CI, and review tools as external verifiers.
-- Default on the review gates: run `/code-review` on every non-trivial product-source PR, and `security-review` whenever the diff touches auth, data access, external input, permissions, secrets, or money. Load the repo's `REVIEW.md` criteria when reviewing.
+- Route review effort by the stakes of the diff, not by default (tier detection lives in [FLOW.md](FLOW.md) Stage 6): trivial diffs (docs, renames, config, pure styling) → CI only; standard PRs — including ordinary frontend changes — → cross-model code review only (two rival-lab reviewers, blind, run locally in the background as implementation finishes); high-stakes PRs (big diffs, schema/migrations, auth/data/money surfaces, new public endpoints, new dependencies, architecture-adjacent work) → `greploop` **plus** the cross-model review. Run `security-review` whenever the diff touches auth, data access, external input, permissions, secrets, or money — regardless of tier. Load the repo's `REVIEW.md` criteria when reviewing.
+- A review finding only counts if it quotes the offending code verbatim at a real `file:line`. Verify the quote exists where claimed before acting; set aside findings that don't verify — they cannot block a merge. A hallucinated bug cannot produce a real quote from a real file.
+- Review loops are capped at two rounds per reviewer per PR. A third round reliably produces only nitpicking. Findings still open after round two go to the orchestrator/human to accept or fix deliberately — the loop does not continue on its own.
+- Never weaken, skip, or delete a test to make it pass. The test caught something real — fix the code instead.
 - Open feature/fix PRs against `staging`, not `main`.
-- Use `greploop` for full Greptile review loops and `check-pr` for one-pass PR readiness.
+- Use `greploop` for full Greptile review loops on high-stakes PRs (per the Stage 6 tiering — not on every PR) and `check-pr` for one-pass PR readiness.
 - Run `code-structure-cleanup` as a separate pass after behavior works when the feature left duplicated mechanics or messy structure.
 - Encode recurring knowledge as infra (Stage 10, Harden). When the same class of issue is hand-fixed twice, stop fixing instances — write the lint rule, CI check, test, skill, or `REVIEW.md`/`CLAUDE.md` rule that kills the class. Automation is how domain knowledge reaches the next contributor without a prompt.
 - Maintain the per-repo conventions when they exist (see below): `REVIEW.md`, `RECOVERY.md`, `MAINTAINER.md`, and a versioned E2E playbook.
@@ -45,12 +51,17 @@ The short shape is:
 
 - Cflow is the single source of truth for skills. Edit canonical skills in `~/stuff/projects/cflow/skills/<name>/` and run `scripts/sync-skills.sh`.
 - Codex and Claude both receive the same canonical skill content through sync; prompt adapters are generated.
-- Default harness roles: Claude (Fable 5) is the orchestrator — planning, plan/Spec conversations, PR review gates, and driving the executor headless via `codex exec` for mechanical implementation. Codex is the executor grinding scoped plans. Plan and design talk happens in the Claude session, not the executor's.
-- Route the executor model by task difficulty to cap token spend, rather than defaulting every branch to the frontier tier:
-  - Trivial/mechanical (renames, config, boilerplate, doc edits) → cheapest tier (GPT-5.6-luna).
-  - Standard implementation against a clear plan → mid tier (GPT-5.6-terra).
-  - Hard, ambiguous, or architecture-adjacent work → frontier tier (GPT-5.6-sol high).
-  Declare the chosen tier per branch in the plan's `Execution:` line; the orchestrator (Fable 5) suggests it and stays frontier for planning and review gates. Start at the cheapest tier that could plausibly one-shot the plan and escalate a tier on repeated failure — don't start at the top.
+- Default harness roles — three lanes, one manager:
+  - **Orchestrator — Claude (Fable 5).** Planning, plan/Spec conversations, dispatching implementation, PR review gates, merges. It does not write code by default: typing burns the attention it needs for judgment. Plan and design talk happens in the orchestrator session, not the executors'.
+  - **Executor — Codex (headless `codex exec`).** Backend, mechanical, and routine frontend plumbing work against a written plan.
+  - **Designer — Claude Opus 4.8.** Only taste-sensitive UI: new pages, layout, visual polish, wording. Routine frontend work does not qualify — it goes to the executor.
+- Route work by how big and how well-defined the task is — not by how hard it is. A tricky problem with clear boundaries goes to a cheap model; a vague problem touching many parts of the system goes to a strong one:
+  - Small and fully specified (renames, config, boilerplate, doc edits) → cheapest tier (GPT-5.6-luna).
+  - Well-defined implementation against a clear plan → mid tier (GPT-5.6-terra).
+  - Vague, cross-cutting, open-ended investigation, or browser-driving work → frontier tier (GPT-5.6-sol high).
+  - Taste-sensitive UI → the designer (Opus 4.8), regardless of size.
+  Declare the chosen model per branch/PR in the plan's `Execution:` line; the orchestrator suggests it and stays frontier for planning and review gates. Start at the cheapest tier that could plausibly one-shot the plan.
+- Escalation: when output fails the verifier, redo it with a stronger model immediately, without asking. Judge the output, not the cost of producing it — a cheap first attempt that fails costs one retry; starting expensive can never be undone.
 - One orchestrator session per repo. It supervises executor runs in the background; scale executors only as far as plan dependencies and repo isolation (separate branches, git worktrees) allow — stacked plans run sequentially.
 - Interactive Codex terminals are the fallback, not the default: use one when orchestrator usage runs out or when pairing directly on open design questions.
 - Prefer the strongest available coding harness/model for the task, but keep the workflow portable across harnesses.
