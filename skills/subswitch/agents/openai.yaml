@@ -1,0 +1,4 @@
+interface:
+  display_name: "Subswitch"
+  short_description: "Keep Claude and Codex workers running"
+  default_prompt: "Use $subswitch to set up or recover automatic account rotation for this Cflow run."
