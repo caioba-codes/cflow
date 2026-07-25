@@ -45,6 +45,7 @@ The short shape is:
 - Open feature/fix PRs against `staging`, not `main`.
 - Use `greploop` for full Greptile review loops on high-stakes PRs (per the Stage 6 tiering — not on every PR) and `check-pr` for one-pass PR readiness.
 - Run `code-structure-cleanup` as a separate pass after behavior works when the feature left duplicated mechanics or messy structure.
+- Tear down the workspace when a PR merges: `git worktree remove` then `git branch -d`, in the same motion as closing the PR. Worktrees live under one durable root (`~/stuff/_worktrees/<repo>-<slug>/`) and exist only when two branches must be open at once — otherwise `git switch`. Sweep leftovers with `scripts/prune-worktrees.sh`, which refuses to touch anything holding uncommitted or unpushed work and detects squash-merged branches that `git branch --merged` cannot see. Details in [FLOW.md](FLOW.md) → "Worktree And Branch Hygiene".
 - Encode recurring knowledge as infra (Stage 10, Harden). When the same class of issue is hand-fixed twice, stop fixing instances — write the lint rule, CI check, test, skill, or `REVIEW.md`/`CLAUDE.md` rule that kills the class. Automation is how domain knowledge reaches the next contributor without a prompt.
 - Maintain the per-repo conventions when they exist (see below): `REVIEW.md`, `RECOVERY.md`, `MAINTAINER.md`, and a versioned E2E playbook.
 - Stop when the loop reaches its success condition, repeats the same failure, exceeds the iteration budget, or needs human product/security judgment.
