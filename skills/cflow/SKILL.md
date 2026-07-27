@@ -22,7 +22,7 @@ The short shape is:
 5. Verify locally with objective checks and by driving the real flow end to end — user-facing changes are graded by a fresh agent that didn't write the code.
 6. Open a PR to `staging`.
 7. Run the review tier the diff warrants (trivial → CI only; standard → cross-model review; high-stakes → greploop + cross-model; security review when triggered) — capped at two rounds per reviewer.
-8. Merge to `staging` and validate there.
+8. Merge to `staging`; before applying any migration to a shared database, pass the migration gate (cross-model review of the SQL itself, findings reproduced against a throwaway database, explicit `SAFE TO RUN`). Then validate there.
 9. Run cleanup as a separate pass when useful.
 10. Harden recurring issues into automation (lint/CI/skill/`REVIEW.md`) as a triggered pass.
 11. Promote `staging` to `main`.
@@ -45,6 +45,7 @@ The short shape is:
 - Route review effort by the stakes of the diff, not by default (tier detection lives in [FLOW.md](FLOW.md) Stage 6): trivial diffs (docs, renames, config, pure styling) → CI only; standard PRs — including ordinary frontend changes — → cross-model code review only (two rival-lab reviewers, blind, run locally in the background as implementation finishes); high-stakes PRs (big diffs, schema/migrations, auth/data/money surfaces, new public endpoints, new dependencies, architecture-adjacent work) → `greploop` **plus** the cross-model review. Run `security-review` whenever the diff touches auth, data access, external input, permissions, secrets, or money — regardless of tier. Load the repo's `REVIEW.md` criteria when reviewing.
 - A review finding only counts if it quotes the offending code verbatim at a real `file:line`. Verify the quote exists where claimed before acting; set aside findings that don't verify — they cannot block a merge. A hallucinated bug cannot produce a real quote from a real file.
 - Review loops are capped at two rounds per reviewer per PR. A third round reliably produces only nitpicking. Findings still open after round two go to the orchestrator/human to accept or fix deliberately — the loop does not continue on its own.
+- **Never apply a migration to a shared database on a reading.** Every migration gets its own cross-model review immediately before it runs (Stage 7b), separate from the PR review that approved it — the PR gate reviews a diff, this gate reviews the statements about to execute. Require an explicit `SAFE TO RUN` verdict, and reproduce each finding against a throwaway database at the same major version rather than arguing about it. Both times this gate was skipped in practice, the migration contained a defect that would have corrupted live data.
 - Never weaken, skip, or delete a test to make it pass. The test caught something real — fix the code instead.
 - Open feature/fix PRs against `staging`, not `main`.
 - Use `greploop` for full Greptile review loops on high-stakes PRs (per the Stage 6 tiering — not on every PR) and `check-pr` for one-pass PR readiness.
