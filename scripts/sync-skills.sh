@@ -132,4 +132,73 @@ else
 fi
 
 note ""
+
+# ---------------------------------------------------------------------------
+# Orphan check — destinations whose source is gone.
+#
+# The sync only ever copies forward, so deleting or renaming a skill under
+# cflow/skills/ leaves the old copy installed in every harness. Both agents keep
+# loading a skill that no longer exists upstream, and until now nothing in this
+# script's output said so.
+#
+# WARN ONLY. Never delete. These directories hold skills cflow does not own, and
+# a wrong prune would silently remove a working skill from two live harnesses at
+# once — a much worse failure than a stale copy. Symlinked entries are skipped
+# outright: the ~14 legacy skills point into ~/.dotfiles/.skills and are not
+# orphans, they are simply managed somewhere else.
+# ---------------------------------------------------------------------------
+
+orphans=0
+
+is_orphan_name() { # $1=name — true when no canonical skill by that name exists
+  [ ! -f "$SKILLS_SRC/$1/SKILL.md" ]
+}
+
+check_orphan_dirs() { # $1=label $2=root
+  local label="$1" root="$2" entry name
+  [ -d "$root" ] || return 0
+  for entry in "$root"/*/; do
+    entry="${entry%/}"
+    # A symlink here is someone else's skill mounted into the same directory.
+    [ -L "$entry" ] && continue
+    name="$(basename "$entry")"
+    is_orphan_name "$name" || continue
+    note "  ! $label — $name/ (no $SKILLS_SRC/$name/SKILL.md)"
+    orphans=$((orphans + 1))
+  done
+}
+
+check_orphan_prompts() { # $1=label $2=root
+  local label="$1" root="$2" entry name
+  [ -d "$root" ] || return 0
+  for entry in "$root"/*.md; do
+    [ -L "$entry" ] && continue
+    name="$(basename "$entry" .md)"
+    is_orphan_name "$name" || continue
+    # Only flag prompts this script installed. Everything in the repo's adapter
+    # directory is generated here, so it is the reliable marker of "ours" — that
+    # keeps hand-written Codex prompts out of the warning.
+    if [ "$root" != "$REPO_CODEX_PROMPTS" ] && [ ! -f "$REPO_CODEX_PROMPTS/$name.md" ]; then
+      continue
+    fi
+    note "  ! $label — $name.md (no $SKILLS_SRC/$name/SKILL.md)"
+    orphans=$((orphans + 1))
+  done
+}
+
+check_orphan_dirs    "claude skills " "$CLAUDE_SKILLS"
+check_orphan_dirs    "codex skills  " "$CODEX_SKILLS"
+check_orphan_prompts "codex prompts " "$CODEX_PROMPTS"
+check_orphan_prompts "repo adapters " "$REPO_CODEX_PROMPTS"
+
+if [ "$orphans" -gt 0 ]; then
+  note ""
+  note "$orphans orphaned destination(s): a skill was renamed or removed and its"
+  note "installed copy is still there. Nothing was deleted — review and remove by"
+  note "hand if the source really is gone."
+else
+  note "no orphaned destinations."
+fi
+
+note ""
 note "done."
