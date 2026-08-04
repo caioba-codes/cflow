@@ -13,7 +13,7 @@ The short shape is:
 
 1. Understand and research the task.
 2. Write the plan; for non-trivial plans, pass the cross-model plan review gate (two rival-lab models check the plan against the real code) before any code is written.
-3. Scope a small branch.
+3. Scope a small branch — plus a bootstrapped worktree when a second writer is already live and its file surface is disjoint.
 4. Implement the minimal behavior.
 5. Verify locally with objective checks and by driving the real flow end to end — user-facing changes are graded by a fresh agent that didn't write the code.
 6. Open a PR to `staging`.
@@ -46,9 +46,11 @@ The short shape is:
 - Open feature/fix PRs against `staging`, not `main`.
 - Use `greploop` for full Greptile review loops on high-stakes PRs (per the Stage 6 tiering — not on every PR) and `check-pr` for one-pass PR readiness.
 - Run `code-structure-cleanup` as a separate pass after behavior works when the feature left duplicated mechanics or messy structure.
+- **The orchestrator owns concurrency admission.** Before dispatching a task while another writer is live, the orchestrator names the new task's file surface and compares it against what is in flight (`git worktree list`, open PRs, the plans' `Parallelism:` lines), then decides: concurrent worktrees, sequential, or stacked. Executors never make this call — a headless executor is a separate process with its own context, cannot see the other worktree, and would discover the overlap only after it started editing. When a plan exists its `Parallelism:` line has already answered this; for ad-hoc work the orchestrator spends the minute to answer it before spawning. Guessing wrong is bounded — worktrees are isolated, so the cost is a merge conflict and a stale review, not corrupted work — so do not build locking on top of this.
 - Tear down the workspace when a PR merges: `git worktree remove` then `git branch -d`, in the same motion as closing the PR. Worktrees live under one durable root (`~/stuff/_worktrees/<repo>-<slug>/`) and exist only when two branches must be open at once — otherwise `git switch`. Sweep leftovers with `scripts/prune-worktrees.sh`, which refuses to touch anything holding uncommitted or unpushed work and detects squash-merged branches that `git branch --merged` cannot see. Details in [FLOW.md](FLOW.md) → "Worktree And Branch Hygiene".
+- Two different things share the name "worktree": the **workspace worktree** above — a checkout holding a branch that becomes a PR, with the hygiene rules that implies — and the **harness fan-out primitive** (a subagent spawned with `isolation: "worktree"`, or `/batch`), which is a scratch tree the harness creates and reclaims within one task. The fan-out primitive needs none of this ceremony: no durable root, no branch naming, no teardown rule. Do not apply workspace rules to it, and do not treat its throughput claims as evidence about workspace parallelism.
 - Encode recurring knowledge as infra (Stage 10, Harden). When the same class of issue is hand-fixed twice, stop fixing instances — write the lint rule, CI check, test, skill, or `REVIEW.md`/`CLAUDE.md` rule that kills the class. Automation is how domain knowledge reaches the next contributor without a prompt.
-- Maintain the per-repo conventions when they exist (see below): `REVIEW.md`, `RECOVERY.md`, `MAINTAINER.md`, and a versioned E2E playbook.
+- Maintain the per-repo conventions when they exist (see below): `REVIEW.md`, `RECOVERY.md`, `MAINTAINER.md`, a versioned E2E playbook, and `scripts/worktree-setup.sh`.
 - Stop when the loop reaches its success condition, repeats the same failure, exceeds the iteration budget, or needs human product/security judgment.
 
 ## Harness Defaults
@@ -79,6 +81,7 @@ Each repo carries a small set of standing documents that let agents work with ze
 - **`RECOVERY.md`** (repo root) — the disaster-recovery playbook: where backups and point-in-time-recovery live, and the exact steps an agent can execute to restore. Assume that at some point an agent will do something destructive. The `careful` skill points here when it catches a destructive op.
 - **`MAINTAINER.md`** (repo root) — the standing reviewer persona and accumulated context for the repo (owner intent, non-obvious invariants, past incidents, style). Loaded by Stage 6 so review carries continuity instead of starting cold each session.
 - **Versioned E2E playbook** (e.g. `docs/e2e-playbook.md`) — a checked-in, versioned script for driving the product's critical flow end to end on a real environment, producing a PASS/FAIL report. Used by Stage 4 verification and by the nightly heartbeat below.
+- **`scripts/worktree-setup.sh`** (repo root) — makes a fresh worktree usable. `git worktree add` copies tracked source and nothing else: no gitignored env files, no installed dependencies, no build caches. An executor launched in that tree fails on its first command and burns a retry diagnosing why. The script copies the env files from the primary checkout and installs each toolchain's dependencies, and is idempotent so it can be re-run. Cloning source is cheap; rebuilding the world is not, and that cost — not disk — is why worktrees get abandoned. Creating a worktree means running this. It is the counterpart of `prune-worktrees.sh`: one makes a workspace real, the other reclaims it.
 
 ### Background heartbeats
 
