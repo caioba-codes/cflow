@@ -1,127 +1,49 @@
 
-# Cflow Workflow
+# Cflow
 
 Cflow is the operating system for building software with coding agents. The human owns goals, taste, product judgment, and risk decisions. Agents do bounded mechanical work. Verifiers decide whether the loop can advance.
 
-Use this skill as the explanation of the workflow. Use `cflow-status` when you need to inspect the current repo state and decide the next step.
+This file is the index. Load **only the stage skill you are in** — each owns its procedure, and loading all of them is the bloat this split exists to prevent. [FLOW.md](FLOW.md) is the canonical stage list that `cflow-status` reads.
 
-## Canonical Flow
+## The flow
 
-Read [FLOW.md](FLOW.md) for the canonical Cflow stages. Do not invent a second stage list in another skill. If a status, checklist, or loop controller needs step names, it should reference `FLOW.md`.
-
-The short shape is:
-
-1. Understand and research the task, then interview the human — every question carries a recommendation; confirmed calls are `LOCKED`; post the GO table (flagging `NEW MACHINERY`) and get a GO before autonomy starts.
-2. Write the plan in increments (≤1 day, each mergeable alone, each with a `Touches:` file list); for non-trivial plans, pass the cross-model plan review gate (two rival-lab models check the plan against the real code) before any code is written.
-3. Scope a small branch — plus a bootstrapped worktree when a second writer is already live and its file surface is disjoint.
-4. Implement the minimal behavior.
-5. Verify locally on the test ladder (`changed` per step, `ready` once per increment, full suite only post-merge) with pasted evidence, and by driving the real flow end to end — user-facing changes are graded by a fresh agent that didn't write the code.
-6. Open a PR to `staging`.
-7. Run the review tier the diff warrants (trivial → CI only; standard → cross-model review; high-stakes → greploop + cross-model; security review when triggered) — capped at two rounds per reviewer.
-8. Merge to `staging`; before applying any migration to a shared database, pass the migration gate (cross-model review of the SQL itself, findings reproduced against a throwaway database, explicit `SAFE TO RUN`). Then validate there.
-9. Run cleanup as a separate pass when useful.
-10. Harden recurring issues into automation (lint/CI/skill/`REVIEW.md`) as a triggered pass — delete-first, every workflow change gets an efficiency-ledger row with a numeric prediction, scored HIT/MISS at the biweekly audit.
-11. Promote `staging` to `main`.
-
-## Operating Rules
-
-- Interview before autonomy. Every question to the human carries the agent's own recommendation ("I recommend X because Y — ok?"). Confirmed decisions are `LOCKED` in the plan and in memory and never reopened. Before substantial execution post the GO table (what / order / executor, `NEW MACHINERY` flagged); after GO, stop only for destructive actions or genuine scope changes — never for a reversible call.
-- Ship in increments: ≤1 day of work each, mergeable and deployable alone, each with a `Touches:` file list (format in [PLANS.md](PLANS.md)). `Touches:` is what concurrency admission compares; an executor whose diff leaves its list stops and reports.
-- Evidence or it didn't happen. Every "done" or "green" claim — from an executor lane, a verifier, or the orchestrator — carries the pasted output (the test-runner summary line, the command, the screenshot). Unpasted green is re-run. An increment is DONE only when merged + deployed + verified with evidence + worktree and branch deleted.
-- Test ladder: `changed` (impact-selected tests) after each step; `ready` (bounded targeted suite) once per increment as the PR gate, summary line in the PR body; the full suite runs post-merge on CI and is never something a writer waits on.
-- Review is advisory at the merge door, blocking through disposition: CI is the only mechanical block; every verified finding is fixed or gets a one-line written disposition in the PR before merge. `security-review` and the migration gate stay hard.
-- Delete first. Every gate, cap, daemon, and rule must earn its existence with a measured problem and a fire/catch counter. Workflow rules climb the ladder prose → counter → enforcement, never straight to enforcement. Before shipping any workflow change, add an efficiency-ledger row (assumption, numeric prediction, how measured); the biweekly audit scores each row HIT/MISS with a reason on every MISS (details in [FLOW.md](FLOW.md) Stage 10).
-
-- Keep work PR-sized. Split broad work into stacked branches.
-- Research before editing. Read the relevant code, tests, schema, migrations, and any plan/spec the user names.
-- Write plans in the two-audience format defined in [PLANS.md](PLANS.md): a plain-language Spec for the human reviewer (which must include a "How it will be built" architecture explanation), a separator, then the agent-facing Plan. The Spec must be readable without opening the code.
-- Every plan header declares who implements what in an `Execution:` line, per branch/PR (format in [PLANS.md](PLANS.md)). Default split under the current harness roles: backend/mechanical work → the executor (Codex, headless `codex exec`); taste-sensitive UI (new pages, layout, visual polish, wording) → the designer; routine frontend plumbing → the executor like any other mechanical work. The orchestrator does not implement by default — typing burns the attention it needs for judgment; it writes code only as a declared exception in the `Execution:` line. One writer per branch at a time; the orchestrator owns review gates and merges regardless of assignment.
-- Before implementing a non-trivial plan, run the cross-model plan review gate (`plan-review` in `cross` mode): two models from rival labs independently check the plan against the real code — named files and functions exist, steps don't contradict, claimed parallelism is real. Cap: two plan revisions, then the human decides. A plan error caught here costs minutes; after implementation it costs hours.
-- Use plan filenames as the implementation-status indicator: `<NNN>-<slug>.md` while any scoped work remains, and `<NNN>-DONE-<slug>.md` only after the entire plan is implemented and validated. Update references when renaming; review approval or one finished PR does not make a multi-part plan `DONE`.
-- **Plans and docs land on the trunk, not on a feature branch.** Plans steer every branch, so a plan edit stranded on one of them is invisible to the rest — worst on long-lived integration branches, where it can hide for days behind a stack of PRs. Commit Markdown-only changes (`docs/**`, `*.md`) straight to the integration branch (`staging`), or as a docs-only PR merged immediately. Two carve-outs: a plan **status flip** caused by code landing (the `DONE` rename, ticking an acceptance criterion) rides the code PR so plan and implementation stay atomic; and a docs change that only makes sense alongside its diff (a README for a new module) rides that PR too. Never commit docs to `main` — docs that `main` has and `staging` lacks invert the promotion flow and conflict at the next promote. This only pays off if branches actually pick the update up, so merge the trunk down into long-lived branches regularly (see [FLOW.md](FLOW.md) Stage 2).
-- Use `source-code-context` before integrating nontrivial package, SDK, API client, or framework behavior.
-- Use the `subswitch` skill when a Claude or Codex worker hits a session/usage limit. Preserve successful sibling work and relaunch only the failed bounded task after rotation; an account-limit interruption does not consume a verifier retry or review round.
-- Build the smallest working behavior before cleanup or broad refactors.
-- Verify behavior, don't assume it. When a change has a runtime surface, drive the real flow end to end (invoke `verify`) — not just unit checks — before opening the PR.
-- The builder never grades its own work. For user-facing changes, end-to-end verification is done by a fresh agent that did not write the code, instructed to prove each acceptance criterion broken — including empty, loading, and error states, mobile widths, and the browser console — not to confirm it works.
-- Treat tests, lint, typechecks, browser checks, CI, and review tools as external verifiers.
-- Route review effort by the stakes of the diff, not by default (tier detection lives in [FLOW.md](FLOW.md) Stage 6): trivial diffs (docs, renames, config, pure styling) → CI only; standard PRs — including ordinary frontend changes — → cross-model code review only (two rival-lab reviewers, blind, run locally in the background as implementation finishes); high-stakes PRs (big diffs, schema/migrations, auth/data/money surfaces, new public endpoints, new dependencies, architecture-adjacent work) → `greploop` **plus** the cross-model review. Run `security-review` whenever the diff touches auth, data access, external input, permissions, secrets, or money — regardless of tier. Load the repo's `REVIEW.md` criteria when reviewing.
-- A review finding only counts if it quotes the offending code verbatim at a real `file:line`. Verify the quote exists where claimed before acting; set aside findings that don't verify — they cannot block a merge. A hallucinated bug cannot produce a real quote from a real file.
-- Review loops are capped at two rounds per reviewer per PR. A third round reliably produces only nitpicking. Findings still open after round two go to the orchestrator/human to accept or fix deliberately — the loop does not continue on its own.
-- **Never apply a migration to a shared database on a reading.** Every migration gets its own cross-model review immediately before it runs (Stage 7b), separate from the PR review that approved it — the PR gate reviews a diff, this gate reviews the statements about to execute. Require an explicit `SAFE TO RUN` verdict, and reproduce each finding against a throwaway database at the same major version rather than arguing about it. Both times this gate was skipped in practice, the migration contained a defect that would have corrupted live data.
-- Never weaken, skip, or delete a test to make it pass. The test caught something real — fix the code instead.
-- Open feature/fix PRs against `staging`, not `main`.
-- Use `greploop` for full Greptile review loops on high-stakes PRs (per the Stage 6 tiering — not on every PR) and `check-pr` for one-pass PR readiness.
-- Run `code-structure-cleanup` as a separate pass after behavior works when the feature left duplicated mechanics or messy structure.
-- **The orchestrator owns concurrency admission.** Before dispatching a task while another writer is live, the orchestrator names the new task's file surface and compares it against what is in flight (`git worktree list`, open PRs, the plans' `Parallelism:` lines), then decides: concurrent worktrees, sequential, or stacked. Executors never make this call — a headless executor is a separate process with its own context, cannot see the other worktree, and would discover the overlap only after it started editing. When a plan exists its `Parallelism:` line has already answered this; for ad-hoc work the orchestrator spends the minute to answer it before spawning. Guessing wrong is bounded — worktrees are isolated, so the cost is a merge conflict and a stale review, not corrupted work — so do not build locking on top of this.
-- Tear down the workspace when a PR merges: `git worktree remove` then `git branch -d`, in the same motion as closing the PR. Worktrees live under one durable root (`~/stuff/_worktrees/<repo>-<slug>/`) and exist only when two branches must be open at once — otherwise `git switch`. Sweep leftovers with `scripts/prune-worktrees.sh`, which refuses to touch anything holding uncommitted or unpushed work and detects squash-merged branches that `git branch --merged` cannot see. Details in [FLOW.md](FLOW.md) → "Worktree And Branch Hygiene".
-- Two different things share the name "worktree": the **workspace worktree** above — a checkout holding a branch that becomes a PR, with the hygiene rules that implies — and the **harness fan-out primitive** (a subagent spawned with `isolation: "worktree"`, or `/batch`), which is a scratch tree the harness creates and reclaims within one task. The fan-out primitive needs none of this ceremony: no durable root, no branch naming, no teardown rule. Do not apply workspace rules to it, and do not treat its throughput claims as evidence about workspace parallelism.
-- Encode recurring knowledge as infra (Stage 10, Harden). When the same class of issue is hand-fixed twice, stop fixing instances — write the lint rule, CI check, test, skill, or `REVIEW.md`/`CLAUDE.md` rule that kills the class. Automation is how domain knowledge reaches the next contributor without a prompt.
-- Maintain the per-repo conventions when they exist (see below): `REVIEW.md`, `RECOVERY.md`, `MAINTAINER.md`, a versioned E2E playbook, and `scripts/worktree-setup.sh`.
-- Stop when the loop reaches its success condition, repeats the same failure, exceeds the iteration budget, or needs human product/security judgment.
-
-## Harness Defaults
-
-- Cflow is the single source of truth for skills. Edit canonical skills in `~/stuff/projects/cflow/skills/<name>/` and run `scripts/sync-skills.sh`.
-- Codex and Claude both receive the same canonical skill content through sync; prompt adapters are generated.
-- Default harness roles — three lanes, one manager:
-  - **Orchestrator — Claude.** Planning, plan/Spec conversations, dispatching implementation, PR review gates, merges. It does not write code by default: typing burns the attention it needs for judgment. Plan and design talk happens in the orchestrator session, not the executors'.
-  - **Executor — Codex (headless `codex exec`).** Backend, mechanical, and routine frontend plumbing work against a written plan. Always redirect stdin: `codex exec "$PROMPT" < /dev/null`. Tell it explicitly not to run `git reset`, `git checkout <ref>`, `git rebase`, or `git commit` — an executor that rewinds the branch to "clean up" discards the orchestrator's commits, and the damage is invisible until someone reads `git log`. History is the orchestrator's, not the executor's. Backgrounded without it, stdin is neither a TTY nor closed, so the run blocks forever on `Reading additional input from stdin...` at 0% CPU with no files written — a hang that reads exactly like slow work.
-  - **Designer — Claude.** Only taste-sensitive UI: new pages, layout, visual polish, wording. Routine frontend work does not qualify — it goes to the executor.
-- Route work by how big and how well-defined the task is — not by how hard it is. A tricky problem with clear boundaries goes to a cheap model; a vague problem touching many parts of the system goes to a strong one:
-  - Small and fully specified (renames, config, boilerplate, doc edits) → cheapest tier.
-  - Well-defined implementation against a clear plan → mid tier.
-  - Vague, cross-cutting, open-ended investigation, or browser-driving work → frontier tier.
-  - Taste-sensitive UI → the designer, regardless of size.
-  Declare the actual model and tier per branch/PR in the plan's `Execution:` line — that line is where model choice lives, not this skill. The orchestrator suggests it and stays frontier for planning and review gates. Start at the cheapest tier that could plausibly one-shot the plan.
-- Escalation: when output fails the verifier, redo it with a stronger model immediately, without asking. Judge the output, not the cost of producing it — a cheap first attempt that fails costs one retry; starting expensive can never be undone.
-- One orchestrator session per repo. It supervises executor runs in the background; scale executors only as far as plan dependencies and repo isolation (separate branches, git worktrees) allow — stacked plans run sequentially.
-- Interactive Codex terminals are the fallback, not the default: use one when orchestrator usage runs out or when pairing directly on open design questions.
-- Prefer the strongest available coding harness/model for the task, but keep the workflow portable across harnesses.
-- Use speech-to-text for rich prompts when useful.
-
-## Per-Repo Conventions
-
-Each repo carries a small set of standing documents that let agents work with zero extra context from the prompter. cflow ships templates in [templates/](templates/); copy them into a repo and fill in the real values. Agents load them at the stages noted.
-
-- **`REVIEW.md`** (repo root) — the durable review criteria for this codebase: framework/architecture rules, recurring-issue checklist, "reject if…" rules. Loaded by Stage 6 (Review Loop) and where Stage 10 (Harden) writes newly-encoded review rules. This is how a rejected PR becomes a failure of automation rather than tribal knowledge.
-- **`RECOVERY.md`** (repo root) — the disaster-recovery playbook: where backups and point-in-time-recovery live, and the exact steps an agent can execute to restore. Assume that at some point an agent will do something destructive. The `careful` skill points here when it catches a destructive op.
-- **`MAINTAINER.md`** (repo root) — the standing reviewer persona and accumulated context for the repo (owner intent, non-obvious invariants, past incidents, style). Loaded by Stage 6 so review carries continuity instead of starting cold each session.
-- **Versioned E2E playbook** (e.g. `docs/e2e-playbook.md`) — a checked-in, versioned script for driving the product's critical flow end to end on a real environment, producing a PASS/FAIL report. Used by Stage 4 verification and by the nightly heartbeat below.
-- **`scripts/worktree-setup.sh`** (repo root) — makes a fresh worktree usable. Ships as a project-agnostic template in [templates/worktree-setup.sh](templates/worktree-setup.sh): copy it in as-is. It discovers gitignored env files with `git ls-files --others --ignored` rather than a hardcoded list, and picks each directory's toolchain by lockfile (npm/pnpm/yarn/bun, uv/poetry/pip, cargo, go, bundler). Run it with `--dry-run` once after copying to confirm it resolved your repo correctly. `git worktree add` copies tracked source and nothing else: no gitignored env files, no installed dependencies, no build caches. An executor launched in that tree fails on its first command and burns a retry diagnosing why. The script copies the env files from the primary checkout and installs each toolchain's dependencies, and is idempotent so it can be re-run. Cloning source is cheap; rebuilding the world is not, and that cost — not disk — is why worktrees get abandoned. Creating a worktree means running this. It is the counterpart of `prune-worktrees.sh`: one makes a workspace real, the other reclaims it.
-
-### Background heartbeats
-
-Some verification runs on a schedule, not per-PR. The canonical one is a **nightly E2E heartbeat**: a scheduled agent runs the versioned E2E playbook against `staging` and posts a PASS/FAIL report each morning, catching regressions that per-PR checks miss. Schedule it with the `schedule`/cron tooling; keep the playbook versioned so the check improves over time. Standing background reviewers (a persistent maintainer agent that reviews incoming PRs with `MAINTAINER.md` context) are the same pattern and can be added per repo as the loop matures.
-
-## Loop Engineering Direction
-
-Cflow should evolve from a playbook into a loop-engineering system. Each stage should eventually have:
-
-- Goal: what the stage is trying to accomplish.
-- Inputs: required repo/user/context state.
-- Action: the bounded thing the agent may do.
-- Verifier: objective signal that proves progress.
-- Memory: what gets written down for future loops.
-- Stop/escalate rule: when to continue, stop, split, or ask the human.
-
-`cflow-status` is the first diagnostic layer in that system: it observes the repo, compares it to [FLOW.md](FLOW.md), and tells the user the next action.
-
-## Starter Prompt
-
-```md
-Use Cflow for this task.
-
-Rules:
-1. Read cflow/FLOW.md for the canonical stages.
-2. Research the task and existing code before editing.
-3. Keep the change small and reviewable.
-4. Build the minimal working behavior first.
-5. Run the relevant tests, lint, typechecks, or browser checks.
-6. Open the PR against staging.
-7. Use check-pr or greploop after the PR exists.
-8. Run cleanup as a separate pass if behavior works but structure is messy.
-
-Task:
-<describe the feature or fix>
 ```
+cflow-plan       understand → interview (recommendations, LOCKED, GO table) → plan in increments → plan review gate
+cflow-implement  branch/worktree admission → executor lanes → sync trunk every step → pasted evidence
+cflow-verify     test ladder (changed → ready) → fresh-agent end-to-end grade → hard-reload check
+cflow-review     PR to staging → review tier → cross-model review → findings verified + dispositioned
+cflow-ship       merge → migration gate → validate staging → proof table → teardown → promote
+cflow-harden     cleanup pass → harden recurring classes → efficiency ledger → biweekly audit
+```
+
+`/yolo`-style end-to-end: run the stages in order without stopping for anything reversible after GO.
+
+## Rules that apply at every stage
+
+- **Interview before, autonomy during.** Every question to the human carries a recommendation. Confirmed calls are `LOCKED` and never reopened. After GO, stop only for destructive actions or genuine scope changes.
+- **Evidence or it didn't happen.** Every "done"/"green" claim carries pasted output. Unpasted green is re-run. An executor whose check is still running ends with `VERIFICATION_PENDING: <what> | check: <exact command>` — never a claim.
+- **Never weaken, skip, or delete a test to go green.** Fix the code.
+- **Root cause, never symptoms.** Name the cause before fixing.
+- **Surgical changes.** Every modified line traces to the task. Report dead code; don't silently delete it.
+- **Plans and docs land on the trunk (`staging`), never on `main`**, except a status flip that rides its code PR. Details in [cflow-plan](../cflow-plan/SKILL.md).
+- **Never poll in the foreground.** Background the work and act on the notification; name the liveness signal (log mtime, PID) and post a one-line heartbeat rather than going silent >15 min.
+- **Compaction is a memory event, never an endpoint.** Re-read state and continue the in-flight step.
+- **Sessions are mortal.** Every session ends *shipped* or *handed off* (brief in the plan file — see cflow-plan). An unshipped branch older than a day is a defect.
+- **Delete first.** New machinery needs a measured problem and a fire/catch counter; workflow rules climb prose → counter → enforcement; anything that can block work runs its first 24h in shadow (log-only) mode. Product security is enforced from day one.
+- **End every final report** with a proof table (cflow-ship) and a friction line: what was unexpectedly hard, and the script/doc/skill fix you propose.
+
+## Harness roles
+
+- **Orchestrator — Claude.** Plans, interviews, dispatches, owns every gate and merge. Does not write code by default; a step it implements carries a written reason in the plan's `Execution:` line.
+- **Executor — Codex, headless `codex exec`.** Backend, mechanical, and routine frontend plumbing. Invocation protocol in cflow-implement.
+- **Designer — Claude.** Taste-sensitive UI only (new pages, layout, visual polish, wording).
+- Route by **scope**, not difficulty: small + fully specified → cheapest tier; well-defined against a plan → mid; vague/cross-cutting/browser-driving → frontier. Model named per PR in `Execution:`. Escalate on a failed verifier without asking.
+- `subswitch` when a worker hits a usage limit; an account-limit interruption never consumes a retry or a review round.
+
+## Per-repo conventions
+
+`REVIEW.md`, `RECOVERY.md`, `MAINTAINER.md`, a versioned E2E playbook, `docs/ledger.md`, `scripts/worktree-setup.sh`, `scripts/test-changed.sh`. Templates in [templates/](templates/), scripts in [scripts/](scripts/). Nightly E2E heartbeat and biweekly audit are scheduled, not per-PR.
+
+## Editing cflow
+
+Canonical skills live in `~/stuff/projects/cflow/skills/<name>/`; run `scripts/sync-skills.sh` after editing. Keep each stage skill under ~1,500 words — if a stage needs more, move detail to a `references/` file that is read on demand.
