@@ -11,19 +11,26 @@ Read [FLOW.md](FLOW.md) for the canonical Cflow stages. Do not invent a second s
 
 The short shape is:
 
-1. Understand and research the task.
-2. Write the plan; for non-trivial plans, pass the cross-model plan review gate (two rival-lab models check the plan against the real code) before any code is written.
+1. Understand and research the task, then interview the human — every question carries a recommendation; confirmed calls are `LOCKED`; post the GO table (flagging `NEW MACHINERY`) and get a GO before autonomy starts.
+2. Write the plan in increments (≤1 day, each mergeable alone, each with a `Touches:` file list); for non-trivial plans, pass the cross-model plan review gate (two rival-lab models check the plan against the real code) before any code is written.
 3. Scope a small branch — plus a bootstrapped worktree when a second writer is already live and its file surface is disjoint.
 4. Implement the minimal behavior.
-5. Verify locally with objective checks and by driving the real flow end to end — user-facing changes are graded by a fresh agent that didn't write the code.
+5. Verify locally on the test ladder (`changed` per step, `ready` once per increment, full suite only post-merge) with pasted evidence, and by driving the real flow end to end — user-facing changes are graded by a fresh agent that didn't write the code.
 6. Open a PR to `staging`.
 7. Run the review tier the diff warrants (trivial → CI only; standard → cross-model review; high-stakes → greploop + cross-model; security review when triggered) — capped at two rounds per reviewer.
 8. Merge to `staging`; before applying any migration to a shared database, pass the migration gate (cross-model review of the SQL itself, findings reproduced against a throwaway database, explicit `SAFE TO RUN`). Then validate there.
 9. Run cleanup as a separate pass when useful.
-10. Harden recurring issues into automation (lint/CI/skill/`REVIEW.md`) as a triggered pass.
+10. Harden recurring issues into automation (lint/CI/skill/`REVIEW.md`) as a triggered pass — delete-first, every workflow change gets an efficiency-ledger row with a numeric prediction, scored HIT/MISS at the biweekly audit.
 11. Promote `staging` to `main`.
 
 ## Operating Rules
+
+- Interview before autonomy. Every question to the human carries the agent's own recommendation ("I recommend X because Y — ok?"). Confirmed decisions are `LOCKED` in the plan and in memory and never reopened. Before substantial execution post the GO table (what / order / executor, `NEW MACHINERY` flagged); after GO, stop only for destructive actions or genuine scope changes — never for a reversible call.
+- Ship in increments: ≤1 day of work each, mergeable and deployable alone, each with a `Touches:` file list (format in [PLANS.md](PLANS.md)). `Touches:` is what concurrency admission compares; an executor whose diff leaves its list stops and reports.
+- Evidence or it didn't happen. Every "done" or "green" claim — from an executor lane, a verifier, or the orchestrator — carries the pasted output (the test-runner summary line, the command, the screenshot). Unpasted green is re-run. An increment is DONE only when merged + deployed + verified with evidence + worktree and branch deleted.
+- Test ladder: `changed` (impact-selected tests) after each step; `ready` (bounded targeted suite) once per increment as the PR gate, summary line in the PR body; the full suite runs post-merge on CI and is never something a writer waits on.
+- Review is advisory at the merge door, blocking through disposition: CI is the only mechanical block; every verified finding is fixed or gets a one-line written disposition in the PR before merge. `security-review` and the migration gate stay hard.
+- Delete first. Every gate, cap, daemon, and rule must earn its existence with a measured problem and a fire/catch counter. Workflow rules climb the ladder prose → counter → enforcement, never straight to enforcement. Before shipping any workflow change, add an efficiency-ledger row (assumption, numeric prediction, how measured); the biweekly audit scores each row HIT/MISS with a reason on every MISS (details in [FLOW.md](FLOW.md) Stage 10).
 
 - Keep work PR-sized. Split broad work into stacked branches.
 - Research before editing. Read the relevant code, tests, schema, migrations, and any plan/spec the user names.
