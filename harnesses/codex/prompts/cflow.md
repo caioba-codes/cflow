@@ -7,16 +7,7 @@ This file is the index. Load **only the stage skill you are in** — each owns i
 
 ## The flow
 
-```
-cflow-plan       understand → interview (recommendations, LOCKED, GO table) → plan in increments → plan review gate
-cflow-implement  branch/worktree admission → executor lanes → sync trunk every step → pasted evidence
-cflow-verify     test ladder (changed → ready) → fresh-agent end-to-end grade → hard-reload check
-cflow-review     PR to staging → review tier → cross-model review → findings verified + dispositioned
-cflow-ship       merge → migration gate → validate staging → proof table → teardown → promote
-cflow-harden     cleanup pass → harden recurring classes → efficiency ledger → biweekly audit
-```
-
-`/yolo`-style end-to-end: run the stages in order without stopping for anything reversible after GO.
+Stages and their skills are in [FLOW.md](FLOW.md): plan → implement → verify → review → ship → harden. Run them in order without stopping for anything reversible after GO.
 
 ## Rules that apply at every stage
 
@@ -25,7 +16,7 @@ cflow-harden     cleanup pass → harden recurring classes → efficiency ledger
 - **Never weaken, skip, or delete a test to go green.** Fix the code.
 - **Root cause, never symptoms.** Name the cause before fixing.
 - **Surgical changes.** Every modified line traces to the task. Report dead code; don't silently delete it.
-- **Plans and docs land on the trunk (`staging`), never on `main`**, except a status flip that rides its code PR. Details in [cflow-plan](../cflow-plan/SKILL.md).
+- **Plans and docs land on `staging` as a docs-only PR, never on `main`**, except a status flip that rides its code PR. Details in [cflow-plan](../cflow-plan/SKILL.md).
 - **Never poll in the foreground.** Background the work and act on the notification; name the liveness signal (log mtime, PID) and post a one-line heartbeat rather than going silent >15 min.
 - **Compaction is a memory event, never an endpoint.** Re-read state and continue the in-flight step.
 - **Sessions are mortal.** Every session ends *shipped* or *handed off* (brief in the plan file — see cflow-plan). An unshipped branch older than a day is a defect.
