@@ -21,6 +21,7 @@ Stages and their skills are in [FLOW.md](FLOW.md): plan → implement → verify
 - **Compaction is a memory event, never an endpoint.** Re-read state and continue the in-flight step.
 - **Sessions are mortal.** Every session ends *shipped* or *handed off* (brief in the plan file — see cflow-plan). An unshipped branch older than a day is a defect.
 - **Delete first.** New machinery needs a measured problem and a fire/catch counter; workflow rules climb prose → counter → enforcement; anything that can block work runs its first 24h in shadow (log-only) mode. Product security is enforced from day one.
+- **Browser work happens in the user's own running Chrome** — Claude via the `claude-in-chrome` extension, Codex via its `chrome@openai-bundled` plugin — as a new tab in their window. Never a separate Chrome instance, headless browser, or the `chrome-devtools` MCP unless the user asks.
 - **End every final report** with a proof table (cflow-ship) and a friction line: what was unexpectedly hard, and the script/doc/skill fix you propose.
 
 ## Harness roles
