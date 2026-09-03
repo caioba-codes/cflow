@@ -42,4 +42,4 @@ Stages and their skills are in [FLOW.md](FLOW.md): plan → implement → verify
 
 ## Editing cflow
 
-Canonical skills live in `~/stuff/projects/cflow/skills/<name>/`; run `scripts/sync-skills.sh` after editing. Keep each stage skill under ~1,500 words — if a stage needs more, move detail to a `references/` file that is read on demand.
+Canonical skills live in two repos: Cflow's own stages in `~/stuff/projects/cflow/skills/<name>/`, generic skills in `~/stuff/projects/cskills/skills/<name>/`; run `cskills/scripts/sync-all-skills.sh` (or `cflow/scripts/sync-skills.sh`, same thing) after editing. Keep each stage skill under ~1,500 words — if a stage needs more, move detail to a `references/` file that is read on demand.

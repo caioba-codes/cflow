@@ -1,0 +1,9 @@
+# cflow owns every directory under skills/ (the workflow and its tightly coupled stages).
+owner: cflow
+requires:
+  plan-review
+  source-code-context
+  greploop
+  check-pr
+  careful
+  code-structure-cleanup
