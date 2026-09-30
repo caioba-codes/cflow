@@ -54,7 +54,7 @@ Lobster's king → manager → engineer shape, done with the harness instead of 
 - **One thread per job.** A thread is manager and engineer at once (Opus 5.5 builds directly), on its own branch/worktree, and runs the loop above to a landed PR. Zoom in by opening the thread.
 - **Two levels max.** A thread may spawn subagents for search or an adversarial check, never another manager layer.
 - **Reviewer ≠ author.** On risky surfaces the thread gets its cross-lab review (Astra via Codex) before landing.
-- No Projects available → the old way: parallel sessions, each on its own worktree, same rules.
+- No Projects access yet → one ordinary session named "<repo> king" plays the main chat. It starts each job as a background subagent in its own worktree (Agent tool, `isolation: "worktree"`), follows up on a job with SendMessage, and you zoom in from the tasks pane. Same rules; switch to Projects when it opens up.
 
 ## When a session can't finish
 
