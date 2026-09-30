@@ -46,14 +46,14 @@ Re-read that table when it's more than a month newer than this line; it wins ove
 
 Not used: Sonnet 5.5 (wins benchmarks by burning ~1.8× Opus's tokens — wrong trade on a capped plan). No executor/orchestrator split: Opus 5.5 builds directly; handing work to a second agent costs more than it saves.
 
-## Parallel work: the king and its engineers
+## Parallel work: the king and its workers
 
-- **King** — one conversation per repo (e.g. "nodus king" in the Claude desktop sidebar). Caio talks only to it. It discusses plans, gets GO on one-way doors, starts engineers, tracks them, and reports verified outcomes. It never writes or reviews code, so it stays free to talk; keep it at low effort.
-- **Engineer** — one sidebar conversation per job, in the repo's group, on its own worktree/branch. The king starts it with `spawn_task` (the brief is its first message; Caio clicks once to launch), then follows it with the session tools (`list_sessions`, `get_session`, `send_message`). Caio can open it any time to watch or steer.
-- **The engineer owns the whole job:** build → a fresh reviewer checks it (a subagent told to prove it broken; Astra via `codex exec` on risky surfaces) → the engineer reads the verdict and fixes or finishes → lands the PR → proves it on staging. It returns to the king only when landed and verified, or blocked on a one-way door. The author never grades its own work.
-- **Subagents, one level only.** An engineer may start subagents (Claude Code's Agent tool) for search, review, or — only for a job that splits into parallel pieces — builders in separate worktrees whose work it merges. Subagents never start subagents.
+- **King** — one conversation per repo (e.g. "nodus king" in the Claude desktop sidebar). Caio talks only to it. It discusses plans, gets GO on one-way doors, starts workers, tracks them, and reports verified outcomes. It never writes or reviews code, so it stays free to talk; keep it at low effort.
+- **Worker** — one sidebar conversation per job, in the repo's group, on its own worktree/branch. The king starts it with `spawn_task` (the brief is its first message; Caio clicks once to launch), then follows it with the session tools (`list_sessions`, `get_session`, `send_message`). Caio can open it any time to watch or steer.
+- **The worker owns the whole job:** build → a fresh reviewer checks it (a subagent told to prove it broken; Astra via `codex exec` on risky surfaces) → the worker reads the verdict and fixes or finishes → lands the PR → proves it on staging. It returns to the king only when landed and verified, or blocked on a one-way door. The author never grades its own work.
+- **Subagents, one level only.** A worker may start subagents (Claude Code's Agent tool) for search, review, or — only for a job that splits into parallel pieces — builders in separate worktrees whose work it merges. Subagents never start subagents.
 - Tiny jobs (a one-file fix) skip the sidebar: the king runs one background subagent in a worktree (Agent tool, `isolation: "worktree"`).
-- An engineer's conversation is archived once its PR lands. When Claude Code Projects reaches this account, the king maps onto its main chat and engineers onto its threads.
+- A worker's conversation is archived once its PR lands. When Claude Code Projects reaches this account, the king maps onto its main chat and workers onto its threads.
 
 ## When a session can't finish
 
