@@ -46,6 +46,16 @@ Re-read that table when it's more than a month newer than this line; it wins ove
 
 Not used: Sonnet 5.5 (wins benchmarks by burning ~1.8× Opus's tokens — wrong trade on a capped plan). No executor/orchestrator split: Opus 5.5 builds directly; handing work to a second agent costs more than it saves.
 
+## Parallel work: one conversation per repo
+
+Lobster's king → manager → engineer shape, done with the harness instead of custom machinery:
+
+- **One Claude Code Project per repo** (e.g. "Nodus"). Its main chat is the king: Caio talks only to it. It plans, gets GO on one-way doors, starts threads, and reports verified outcomes. It never writes code; keep it at low effort.
+- **One thread per job.** A thread is manager and engineer at once (Opus 5.5 builds directly), on its own branch/worktree, and runs the loop above to a landed PR. Zoom in by opening the thread.
+- **Two levels max.** A thread may spawn subagents for search or an adversarial check, never another manager layer.
+- **Reviewer ≠ author.** On risky surfaces the thread gets its cross-lab review (Astra via Codex) before landing.
+- No Projects available → the old way: parallel sessions, each on its own worktree, same rules.
+
 ## When a session can't finish
 
 Push the branch and write a short handoff (`handoff` skill, or `lobster-work` to continue on the M1). An unpushed branch at session end is the only real loss.
