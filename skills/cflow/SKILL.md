@@ -61,4 +61,4 @@ Not used: Sonnet 5.5 (wins benchmarks by burning ~1.8× Opus's tokens — wrong 
 
 ## When a session can't finish
 
-Push the branch and write a short handoff (`handoff` skill, or `lobster-work` to continue on the M1). An unpushed branch at session end is the only real loss.
+Push the branch and write a short handoff (`handoff` skill). An unpushed branch at session end is the only real loss.
