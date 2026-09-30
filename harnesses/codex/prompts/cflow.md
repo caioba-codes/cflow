@@ -1,41 +1,51 @@
 
 # Cflow
 
-Cflow is the operating system for building software with coding agents. The human owns goals, taste, product judgment, and risk decisions. Agents do bounded mechanical work. Verifiers decide whether the loop can advance.
+Modelled on how Lobster actually ships: few rules, small changes, proof from the live system. The repo's `AGENTS.md` is the source of truth for its commands, branches, and architecture rules; this skill is only the loop around them. v1 (eleven stages, seven skills) is in `skills-archive/cflow-v1/`, tag `cflow-v1`.
 
-This file is the index. Load **only the stage skill you are in** — each owns its procedure, and loading all of them is the bloat this split exists to prevent. [FLOW.md](FLOW.md) is the canonical stage list that `cflow-status` reads.
+## The loop
 
-## The flow
+1. **Sync.** Pull the trunk before touching anything (`scripts/sync.sh` or `git pull --ff-only`). Never work on a stale or diverged clone.
+2. **Read, then decide if a plan pays.** Read the code the change touches. Write a plan only when the work spans more than one session or touches a risky surface (below). Otherwise just build.
+3. **Build in small commits.** Claude writes the code. One behavior per commit; the message says what now happens, not what was edited ("mail: an info session from a GT person is noise, not an alert").
+4. **Test what you touched.** Run the tests the diff can reach, plus lint/typecheck/build if the repo has them. Never weaken or delete a test to go green; name the root cause before fixing.
+5. **Land the way the repo says.** Direct to trunk, or a small PR with auto-merge — whatever `AGENTS.md` sets. Plans and docs ride in the same commit/PR as their code.
+6. **Prove it on the running system.** Done means the deployed or running thing was checked: a live call, the log, the page driven in the browser. An agent saying "done" is not evidence; tests alone are not evidence for anything with a runtime surface.
+7. **Record it.** Plan shipped → its row in the plans index gets the commit hashes and any leftovers, named. Durable operational knowledge goes in the runbook, not in chat.
 
-Stages and their skills are in [FLOW.md](FLOW.md): plan → implement → verify → review → ship → harden. Run them in order without stopping for anything reversible after GO.
+Ask Caio only about one-way doors (data loss, prod schema, money, messages to people, auth changes). Decide everything reversible yourself and say what you chose.
 
-## Rules that apply at every stage
+## Risky surfaces (the only place ceremony is spent)
 
-- **Interview before, autonomy during.** Every question to the human carries a recommendation. Confirmed calls are `LOCKED` and never reopened. After GO, stop only for destructive actions or genuine scope changes.
-- **Evidence or it didn't happen.** Every "done"/"green" claim carries pasted output. Unpasted green is re-run. An executor whose check is still running ends with `VERIFICATION_PENDING: <what> | check: <exact command>` — never a claim.
-- **Never weaken, skip, or delete a test to go green.** Fix the code.
-- **Root cause, never symptoms.** Name the cause before fixing.
-- **Surgical changes.** Every modified line traces to the task. Report dead code; don't silently delete it.
-- **Plans and docs land on `staging` as a docs-only PR, never on `main`**, except a status flip that rides its code PR. Details in [cflow-plan](../cflow-plan/SKILL.md).
-- **Never poll in the foreground.** Background the work and act on the notification; name the liveness signal (log mtime, PID) and post a one-line heartbeat rather than going silent >15 min.
-- **Compaction is a memory event, never an endpoint.** Re-read state and continue the in-flight step.
-- **Sessions are mortal.** Every session ends *shipped* or *handed off* (brief in the plan file — see cflow-plan). An unshipped branch older than a day is a defect.
-- **Delete first.** New machinery needs a measured problem and a fire/catch counter; workflow rules climb prose → counter → enforcement; anything that can block work runs its first 24h in shadow (log-only) mode. Product security is enforced from day one.
-- **Browser work happens in the user's own running Chrome** — Claude via the `claude-in-chrome` extension, Codex via its `chrome@openai-bundled` plugin — as a new tab in their window. Never a separate Chrome instance, headless browser, or the `chrome-devtools` MCP unless the user asks.
-- **End every final report** with a proof table (cflow-ship) and a friction line: what was unexpectedly hard, and the script/doc/skill fix you propose.
+Each repo lists its own in `AGENTS.md` (Lobster: `lobsterd.mjs`, the display app, boot. Nodus: authz, the LLM id boundary, storage paths, migrations, secrets). On a risky surface:
 
-## Harness roles
+- **Plan first**, and get a cross-lab review of the plan before building. Save the review next to the plan.
+- **Cross-lab review of the diff** before it lands (see models below). Verify each finding by quoting the code or reproducing it; fix or say why not. Two rounds max.
+- **SQL against a shared database** (staging/prod): review the statements *and* the real schema for a `SAFE TO RUN` verdict, reproduce any finding on a throwaway DB, apply, then confirm the objects exist. Never skipped, even if the PR was reviewed.
 
-- **Orchestrator — Claude.** Plans, interviews, dispatches, owns every gate and merge. Does not write code by default; a step it implements carries a written reason in the plan's `Execution:` line.
-- **Executor — Codex, headless `codex exec`.** Backend, mechanical, and routine frontend plumbing. Invocation protocol in cflow-implement.
-- **Designer — Claude.** Taste-sensitive UI only (new pages, layout, visual polish, wording).
-- Route by **scope**, not difficulty: small + fully specified → cheapest tier; well-defined against a plan → mid; vague/cross-cutting/browser-driving → frontier. Model named per PR in `Execution:`. Escalate on a failed verifier without asking.
-- `subswitch` when a worker hits a usage limit; an account-limit interruption never consumes a retry or a review round.
+Everything else gets no review gate beyond CI. Use `/code-review low` when you want a cheap second look.
 
-## Per-repo conventions
+## Plans
 
-`REVIEW.md`, `RECOVERY.md`, `MAINTAINER.md`, a versioned E2E playbook, `docs/ledger.md`, `scripts/worktree-setup.sh`, `scripts/test-changed.sh`. Templates in [templates/](templates/), scripts in [scripts/](scripts/). Nightly E2E heartbeat and biweekly audit are scheduled, not per-PR.
+- `plans/` (or `docs/plans/`), one file per plan: `YYYY-MM-DD-<slug>.md`, `Status:` line at the top.
+- `README.md` in that folder is the index: plan, status, shipped commits. Done plans stay; that is the track record. Nothing is "done" with silent leftovers.
+- A plan is short: goal, what changes where, how it will be proven on the running system, open one-way-door questions. Revisions append, they don't rewrite.
 
-## Editing cflow
+## Models (checked 2026-09-30 against `~/stuff/cortex/stack/model-fit.md`)
 
-Canonical skills live in two repos: Cflow's own stages in `~/stuff/projects/cflow/skills/<name>/`, generic skills in `~/stuff/projects/cskills/skills/<name>/`; run `cskills/scripts/sync-all-skills.sh` (or `cflow/scripts/sync-skills.sh`, same thing) after editing. Keep each stage skill under ~1,500 words — if a stage needs more, move detail to a `references/` file that is read on demand.
+Re-read that table when it's more than a month newer than this line; it wins over this section.
+
+| Job | Default | When to switch |
+|---|---|---|
+| Build | Opus 5.5 in Claude Code, `/effort medium` | `xhigh` for a long autonomous run; Codex + GPT-6 Astra when the Max 7-day bucket is tight |
+| Plan / architecture | Opus 5.5 `/effort high` | Fable 5.1 for genuinely long-horizon plans, or `/advisor fable` under Opus for the decision points only |
+| Cross-lab review (risky surfaces) | `codex exec -m gpt-6-astra` on the diff or plan | Smoke-test `codex exec` for 60s first — it can hang silently |
+| Debug a prod bug | GPT-6 Astra via Codex | Opus 5.5 `high` to read an unfamiliar codebase |
+| Browser proof | Claude in Caio's Chrome (`claude-in-chrome`), new tab | Astra computer use for long unattended flows |
+| Lookups, git ops, small edits | Opus 5.5 `/effort low` | — |
+
+Not used: Sonnet 5.5 (wins benchmarks by burning ~1.8× Opus's tokens — wrong trade on a capped plan). No executor/orchestrator split: Opus 5.5 builds directly; handing work to a second agent costs more than it saves.
+
+## When a session can't finish
+
+Push the branch and write a short handoff (`handoff` skill, or `lobster-work` to continue on the M1). An unpushed branch at session end is the only real loss.
