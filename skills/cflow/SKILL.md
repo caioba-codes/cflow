@@ -1,6 +1,6 @@
 ---
 name: cflow
-description: Caio's workering workflow for any repo — sync, plan only when it pays, build in small commits, prove it on the running system, cross-review only risky surfaces, keep a plans index with commit hashes. Load at the start of any build, fix, or plan task in a repo whose AGENTS.md names cflow.
+description: Caio's engineering workflow for any repo — sync, plan only when it pays, build in small commits, prove it on the running system, cross-review only risky surfaces, keep a plans index with commit hashes. Load at the start of any build, fix, or plan task in a repo whose AGENTS.md names cflow.
 ---
 
 # Cflow
