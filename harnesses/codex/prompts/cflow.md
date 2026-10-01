@@ -9,6 +9,7 @@ Ask Caio only about one-way doors (data loss, prod schema, money, messages to pe
 
 - **King** — one conversation per repo (e.g. "nodus king" in the Claude desktop sidebar). Caio talks only to it. It writes plans with Caio, gets GO, starts workers, tracks them, and reports verified outcomes. It never writes or reviews code, so it is always free to talk.
 - **Worker** — one sidebar conversation per job (a job = one approved plan or fix), on its own worktree/branch. The king starts it with `spawn_task` (the brief is its first message; Caio clicks once), sets its model and effort from the roles table (`set_session_model`, `set_session_effort`), and follows it with `list_sessions` / `get_session` / `send_message`. Caio can open it any time.
+- **Naming** — every worker conversation is titled `worker N · <what it's doing>` (e.g. `worker 3 · matrix export to Excel`), set with `set_session_title` right after it starts. N is the next number after the highest worker in the repo's sidebar group (`list_sessions`), so numbers never repeat while a worker is live. The king refers to workers by that number when it reports.
 - **Subagents** — short-lived helpers a worker starts (Agent tool) for search, review, or parallel builders in separate worktrees on a job that splits cleanly. One level only: subagents never start subagents.
 - A one-file fix skips the sidebar: the king runs one background subagent with `isolation: "worktree"`.
 
