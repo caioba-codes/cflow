@@ -7,8 +7,9 @@ In this page you install the skills, pick which models cflow uses, and run your 
 In a terminal, clone cflow next to [cskills](https://github.com/caioba-codes/cskills) and run its sync script:
 
 ```bash
+git clone https://github.com/caioba-codes/cskills
 git clone https://github.com/caioba-codes/cflow
-cflow/scripts/sync-skills.sh
+CSKILLS_DIR="$PWD/cskills" cflow/scripts/sync-skills.sh
 ```
 
 The script installs the skills into `~/.claude/skills` and `~/.codex/skills`.

@@ -21,8 +21,9 @@ fork it. improve it. make it yours. PRs are welcome!
 clone cflow next to [cskills](https://github.com/caioba-codes/cskills) and run its sync script. it installs the skills into `~/.claude/skills` and `~/.codex/skills`.
 
 ```bash
+git clone https://github.com/caioba-codes/cskills
 git clone https://github.com/caioba-codes/cflow
-cflow/scripts/sync-skills.sh
+CSKILLS_DIR="$PWD/cskills" cflow/scripts/sync-skills.sh
 ```
 
 ## get started
@@ -34,7 +35,7 @@ two steps:
 
 new here? the [cflow guide](./docs/guide/README.md) walks you through a first real task, from setup and prompting through verification and overnight runs. stuck, or unsure which skill fits? ask [`/cflow-help`](./skills/cflow-help/SKILL.md).
 
-that's it. the other skills are situational; the mode skill uses them for you as needed. out of the box the mode splits work by model strength: code delegates (feature, refactoring, bug fix, perf, hillclimb) go to opus 5.5 at medium effort, while the hardest changes, prose, and judgment go to opus 5.5 at xhigh. the default panel is opus 5.5 / gpt-6 astra. [`/setup-cflow`](./skills/setup-cflow/SKILL.md) changes any of it.
+that's it. the other skills are situational; the mode skill uses them for you as needed. out of the box every role runs on opus 5.5 at xhigh effort, as in pstack: code delegates (feature, refactoring, bug fix, perf, hillclimb), the hardest changes, prose, and judgment. the default panel is opus 5.5 / gpt-6 astra. [`/setup-cflow`](./skills/setup-cflow/SKILL.md) changes any of it.
 
 ## usage
 
