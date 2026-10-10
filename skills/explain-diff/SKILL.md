@@ -16,11 +16,11 @@ disable-model-invocation: true
 
 ## The pending check (start of a new feature conversation)
 
-Before planning or building a new feature, run `scripts/pending.sh` (installed at `~/.claude/skills/explain-diff/scripts/pending.sh`). Each line is an explainer Caio hasn't reviewed (`<title><TAB><url>`).
+At the start of a new feature, run `scripts/pending.sh` (installed at `~/.claude/skills/explain-diff/scripts/pending.sh`) as an informational reading-list check. Each line is an explainer Caio hasn't reviewed (`<title><TAB><url>`). Unreviewed pages, a missing script, or an unknown result never block planning, implementation, merges, deployments, or subsequent features. Do not ask for review acknowledgment or repeat the check as a merge gate.
 
-- **Anything pending.** Open your first reply with it, one line per page: "You have to review the diff for <feature> first: <url>". Then carry on with the reversible work (reading, prototypes, the plan). Don't merge the new feature's first PR until he has answered that line, either by reviewing or by telling you to go ahead.
+- **Anything pending.** Link each page for Caio to read when convenient, then continue the authorized work.
 - **`none`.** Say nothing about it.
-- **`unknown: ...`.** Say in one line that you couldn't check, and why.
+- **Missing script or `unknown: ...`.** Report the limitation briefly, then continue the authorized work.
 
 Reviewed means the page's Notion task is Done. Caio marks it with the bar at the bottom of the page or in Notion. The list lags by up to ~10 minutes.
 
