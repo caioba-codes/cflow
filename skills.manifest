@@ -1,3 +1,4 @@
 # cflow owns every directory under skills/ (the workflow and its tightly coupled helpers).
 owner: cflow
 requires:
+explain-flow
