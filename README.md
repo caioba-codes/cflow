@@ -119,6 +119,7 @@ to keep [`/cflow`](./skills/cflow/SKILL.md) on across turns, add this line to th
 |---|---|
 | [`/cflow`](./skills/cflow/SKILL.md) | default entry point for any non-trivial task. |
 | [`/cflow-help`](./skills/cflow-help/SKILL.md) | you're new to cflow, or unsure which skill, playbook, or principle fits. finds out what you're trying to do, answers that part, and hands you a prompt to type. runs only when you type `/cflow-help`. |
+| [`/grilling`](./skills/grilling/SKILL.md) | your idea is still fuzzy and you want to be interviewed one question at a time before anything is planned. matt pocock's skill. opt in with `/cflow grill me first <idea>`. |
 | [`/how`](./skills/how/SKILL.md) | you want a walkthrough of how a subsystem works. |
 | [`/why`](./skills/why/SKILL.md) | you want to know why something was built this way. discovers available MCPs at run time and queries each evidence category in parallel (source control, issue tracker, long-form docs, real-time chat, infra observability, error tracking, analytics warehouse). |
 | [`/recall`](./skills/recall/SKILL.md) | you're starting or resuming work and want your recent context on a topic rebuilt from your own chat history and the shared record, handed back as a tight current-state brief. |
@@ -173,6 +174,7 @@ overnight run:     /cflow i'm going to bed. land the stack even if ci flakes. i 
 babysit:           /cflow check on pr 123. anything outstanding?
 visual parity:     /cflow the row spacing is too tall when this flag is on. the second image
                    is correct. repro and fix until it matches.
+grill first:       /cflow grill me first. make the app multi-user, each user with their own data.
 figure it out:     /cflow i'm stepping away. migrate every caller from the synchronous store
                    to the new async one, keeping behavior identical. i want to trust it was done
                    right when i'm back.
