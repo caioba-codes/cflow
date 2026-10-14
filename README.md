@@ -139,7 +139,7 @@ to keep [`/cflow`](./skills/cflow/SKILL.md) on across turns, add this line to th
 | [`/figure-it-out`](./skills/figure-it-out/SKILL.md) | no bundled playbook fits. designs a rigorous, auditable playbook for the task. |
 | [`/show-me-your-work`](./skills/show-me-your-work/SKILL.md) | you want a reviewable decision trail. logs decisions to a tsv you can commit. |
 | [`/explain-flow`](./skills/explain-flow/SKILL.md) | you need to teach someone a workflow. one page, one worked example, every step marked you or agent, plus the commands to type. cflow's own: [example](./skills/explain-flow/references/example-cflow.md). |
-| [`/explain-diff`](./skills/explain-diff/SKILL.md) | a feature landed and you want to understand it. one html page per feature (background, intuition, code, quiz) on the m1, plus a notion review task. |
+| [`/explain-diff`](./skills/explain-diff/SKILL.md) | a feature landed and you want to understand it. one html page per feature (background, intuition, code, quiz), saved locally or published through your own hook. |
 | [`/create-verification-skill`](./skills/create-verification-skill/SKILL.md) | your project has no scripted way to prove app behavior. generates a project-local verify skill with a feature map, for any language or platform. |
 | [`/maintain-verification-skill`](./skills/maintain-verification-skill/SKILL.md) | your verify skill's feature map has drifted from the app. source wave + one live pass, at most one PR of proven corrections. |
 | [`/unslop`](./skills/unslop/SKILL.md) | you're cleaning up writing. removes AI tells. |

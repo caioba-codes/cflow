@@ -68,7 +68,7 @@ Tests alone are not sufficient verification. A PR is verified only when its unit
 
 ### Boot recipe, for every live lane
 
-Each live lane runs on its own cloud VM (a Claude Code cloud session) at the PR head. Drive browser UIs through Playwright and CLIs or TUIs through a terminal multiplexer (cmux/tmux). Claude in Chrome reaches only Caio's browser on this machine, so a lane that needs it runs here instead, per the **Orchestrate** playbook.
+Each live lane runs on its own cloud VM (a Claude Code cloud session) at the PR head. Drive browser UIs through Playwright and CLIs or TUIs through a terminal multiplexer (cmux/tmux). Claude in Chrome reaches only the user's browser on this machine, so a lane that needs it runs here instead, per the **Orchestrate** playbook.
 
 - [ ] `git fetch origin <head-branch> && git checkout <head SHA>`.
 - [ ] <Start the backend and the surface. Wait for ready.>
