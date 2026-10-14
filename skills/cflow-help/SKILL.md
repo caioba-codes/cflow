@@ -34,7 +34,7 @@ When the model rule is missing and it matters, ask whether the user wants to pic
 
 ## Get set up
 
-1. Install by cloning cflow and running `cflow/scripts/sync-skills.sh`, per the README.
+1. Install by cloning cflow and running `cflow/scripts/install.sh`, per the README.
 2. Run [`/setup-cflow`](../setup-cflow/SKILL.md). It asks for a reasoning budget, maps a model to each role, and writes a rule. The rule applies to new chats.
 3. Start a real task with `/cflow`, a goal, and a check that can pass or fail.
 
@@ -84,7 +84,7 @@ The default answer is `/cflow`, which runs most of the others when its steps nee
 | Vet a performance number before reporting or acting on it | [`/benchmark-checklist`](../benchmark-checklist/SKILL.md) |
 | Run a large or cross-cutting change, or one to review after stepping away | [`/figure-it-out`](../figure-it-out/SKILL.md) |
 | Keep a decision log during a run, and review it afterward | [`/show-me-your-work`](../show-me-your-work/SKILL.md) |
-| Teach someone how a workflow works, with a worked example | `/explain-flow` (in cskills) |
+| Teach someone how a workflow works, with a worked example | `/explain-flow` |
 | Understand a feature the agents shipped, as one page with a quiz | [`/explain-diff`](../explain-diff/SKILL.md) |
 | Pick a model for each role and a reasoning budget | [`/setup-cflow`](../setup-cflow/SKILL.md) |
 | Turn their own working habits into a personal mode skill | [`/automate-me`](../automate-me/SKILL.md) |
