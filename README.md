@@ -1,6 +1,6 @@
 # cflow
 
-Skills that make Claude Code and Codex work like a careful engineering team.
+This is my personal workflow. As of now it's a combination of [pstack](https://github.com/cursor/plugins/tree/main/pstack), Matt Pocock's skills and Notion's 10x dev skills, adapted to Claude Projects. If you think it's shit, open a PR. I'd appreciate it.
 
 **Install**
 
