@@ -109,6 +109,8 @@ main.wide { max-width: 1280px; }
 .anytime div { display: flex; gap: 8px; align-items: baseline; }
 .anytime span { color: var(--muted); }
 .anytime code { flex: none; }
+.anytime h4 { grid-column: 1 / -1; margin: 10px 0 0; font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--accent); }
+.anytime h4:first-child { margin-top: 0; }
 .card-foot { margin-top: 18px; padding-top: 12px; border-top: 1px solid var(--line); font-size: 14.5px; color: var(--muted); display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
 @media (max-width: 860px) { .turn { grid-template-columns: 1fr 1fr; } .anytime { grid-template-columns: 1fr; } }
 @media (max-width: 460px) { .turn { grid-template-columns: 1fr; } .row .more { padding-left: 14px; } .anytime div { flex-wrap: wrap; } .anytime code { flex: initial; overflow-wrap: anywhere; } .card { padding: 16px; } }
@@ -245,16 +247,35 @@ main.wide { max-width: 1280px; }
     </ul></div>
   </div>
   <div class="anytime">
+    <h4>Ask and understand</h4>
     <div><code>/cflow-help</code><span>which skill fits?</span></div>
     <div><code>/how &lt;question&gt;</code><span>how does X work</span></div>
     <div><code>/why &lt;question&gt;</code><span>why was X built this way</span></div>
-    <div><code>/interrogate</code><span>other models try to break a change</span></div>
+    <div><code>/teach &lt;topic&gt;</code><span>really understand a change or a part of the code</span></div>
     <div><code>/bro</code><span>last message in plain words</span></div>
+    <div><code>/recall &lt;topic&gt;</code><span>catch up on a topic</span></div>
+    <div><code>/show-me-your-work</code><span>what it did while you were away</span></div>
+    <div><code>/in-your-own-words</code><span>check it understood what you want</span></div>
+    <h4>Steer the work</h4>
     <div><code>new task: &lt;ask&gt;</code><span>switch to something else</span></div>
     <div><code>don't change any code yet</code><span>investigate only</span></div>
-    <div><code>/show-me-your-work</code><span>what it did while you were away</span></div>
-    <div><code>/recall &lt;topic&gt;</code><span>catch up on a topic</span></div>
+    <div><code>/sharpen &lt;task&gt;</code><span>sharpen a task before it starts</span></div>
+    <div><code>/tdd</code><span>build it test first</span></div>
+    <div><code>/typescript-best-practices</code><span>TypeScript rules for this task</span></div>
     <div><code>/cflow i'm going to bed. land the stack.</code><span>overnight run</span></div>
+    <h4>Check a change</h4>
+    <div><code>/interrogate</code><span>other models try to break a change</span></div>
+    <div><code>/blast-radius</code><span>what else this change could break</span></div>
+    <h4>Make the agents better</h4>
+    <div><code>/correct</code><span>stop mistakes agents keep repeating here</span></div>
+    <div><code>/reflect</code><span>turn this chat's lessons into skill edits</span></div>
+    <div><code>/automate-me</code><span>teach agents how you like to work</span></div>
+    <h4>Setup</h4>
+    <div><code>/setup-cflow</code><span>change models or budget</span></div>
+    <div><code>/create-verification-skill</code><span>teach agents to use your app</span></div>
+    <div><code>/maintain-verification-skill</code><span>keep that skill up to date</span></div>
+    <div><code>/subswitch</code><span>move agents to another account at a limit</span></div>
+    <div><code>/explain-flow</code><span>this page, or one for any workflow</span></div>
   </div>
   <div class="card-foot"><span>You decide: idea · grilling · autopilot · product calls · merge · deploys</span><span class="no-print"><button class="link" onclick="window.print()">Print</button> · <button class="link" id="show-start">Show setup again</button></span></div>
 </div>

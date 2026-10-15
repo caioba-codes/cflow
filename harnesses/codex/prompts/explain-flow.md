@@ -29,10 +29,10 @@ End the tab with the **I'm set up, show my cheat sheet** button and nothing else
 
 **Cheat sheet tab**
 
-A card that fits one screen and prints on one landscape page.
+A card with every command the human types. Make it as long as that takes.
 
 - **The turn.** One column per phase, in order, like the phases on a game card. Under each phase are 1–3 things the **human** types or decides there.
-- **Anytime.** The commands the human reaches for between phases, each with a few words on when.
+- **Anytime.** Every skill the workflow doesn't run on its own, plus the phrases the human types between phases, each with a few words on when. Group them under short headings by what they're for.
 - **Footer.** The human's gates in one line, plus the Print and Show setup again links.
 
 Only commands the human types belong here. Leave out anything only agents run.
@@ -41,7 +41,7 @@ Only commands the human types belong here. Leave out anything only agents run.
 
 1. **Agnostic and private.** Nothing about the author's machines, accounts, repos, people, PRs or private hosts. Never state prices, plan counts or spending. Describe the kind of plan, like "more than one Max plan works best". Write "your repo" and "the app". The workflow's own public install command stays.
 2. **Plain English.** Short sentences, no long dashes. Name each mechanism once in plain words, not internal jargon alone. Run the prose through the **unslop** skill.
-3. **Cut hard.** If a line doesn't change what the reader does, it goes. The cheat sheet must fit one screen at 1280×800.
+3. **Cut hard.** If a line doesn't change what the reader does, it goes. Never cut a command the human has to type from the cheat sheet to save space.
 4. **Self-contained.** Inline CSS and JS, no external requests, light and dark via `prefers-color-scheme`, readable on a phone.
 5. **Plain look.** Off-white and black, one small accent color. No gradients, hero sections or marketing copy. It should look like a good README, not a product homepage.
 
@@ -51,5 +51,5 @@ Only commands the human types belong here. Leave out anything only agents run.
 2. Map every phase onto the canned example with concrete details.
 3. Write the page from `references/how-cflow-works.html`.
 4. Check it against the rules, rule 1 first. Search the page for names, hostnames, repo names, PR numbers, prices and plan counts.
-5. Open it in a browser if you can. Confirm both tabs, the I'm-set-up memory across a reload, and that the cheat sheet fits one screen.
+5. Open it in a browser if you can. Confirm both tabs, the I'm-set-up memory across a reload, and that the cheat sheet reads well on a laptop and a phone.
 6. Save it where the person asks. Otherwise save `how-<workflow>-works.html` in the current folder. Reply with the path and a one-line suggestion to open it in a browser.
