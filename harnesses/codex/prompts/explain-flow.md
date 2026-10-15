@@ -6,7 +6,7 @@
 ## Inputs
 
 - **The workflow.** Default to cflow when the person names none. Find its source of truth: the entry skill (for cflow, `skills/cflow/SKILL.md`), the playbooks it routes to, and the setup skill. Read them. Every step and command on the page must trace to something the workflow actually says.
-- **The example.** One canned feature, the same one every time the page is regenerated for that workflow. For cflow it's the comments feature in the model answer. For another workflow, pick one realistic multi-step feature that runs through the workflow's default path, and keep it. Show the default path only: no optional modes (written plans, autopilot) as steps. Put those on the cheat sheet.
+- **The example.** One canned feature, the same one every time the page is regenerated for that workflow. For cflow it's the comments feature in the model answer. For another workflow, pick one realistic multi-step feature that runs through the workflow's default path, and keep it. Every choice the reader has to make is a step, placed where they make it, with its options listed (cflow: choosing autopilot at the end of the first message). Modes nobody has to choose (a written plan) go on the cheat sheet.
 - **The reader.** Someone who has never seen the workflow and works in a different repo. Later, the same person who just needs a reminder.
 
 ## The page
