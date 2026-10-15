@@ -1,34 +1,52 @@
 ---
 name: explain-flow
-description: "Write a one-page guide that teaches someone else how an agent workflow works, built around one worked example: every step from setup to shipped, each marked as the human's or the agent's, plus the commands they will actually type. Use for /explain-flow, 'explain this flow', 'explain my workflow to a friend', 'write a how-it-works doc for <workflow>'."
+description: "Write a one-file HTML page for an agent workflow with two tabs: Get started (prerequisites, then one canned feature step by step, each step marked you or agent) and a one-screen cheat sheet of what the human types or decides. The page opens on Get started until the reader clicks \"I'm set up\", then always on the cheat sheet. Works for any workflow. Use for /explain-flow, 'explain this flow', 'explain my workflow to a friend', 'make a cheat sheet for <workflow>'."
 disable-model-invocation: true
 ---
 
 # Explain flow
 
-**You write the page a newcomer reads to learn a workflow by example: which steps are theirs, which are the agents', and what they type.** The model answer is `references/example-cflow.md`, written for cflow (it is also cflow's own how-it-works guide). Read it before you write, and match its shape, length and tone.
+**You write the one page someone keeps open next to them for a workflow: first how to get set up and what a feature looks like end to end, then, for every day after, a one-screen cheat sheet of what they type or decide.** The model answer is `references/how-cflow-works.html`, cflow's own page. Copy its structure, CSS and script, and replace the content. Match its length and tone.
 
 ## Inputs
 
-- **The workflow.** Find its source of truth: the entry skill (for cflow, `skills/cflow/SKILL.md`), the playbooks it routes to, and the setup skill. Read them. Every step on the page must trace to something the workflow actually says. Never describe what you think it should do.
-- **The example.** Use the feature the person names. Otherwise pick one realistic, multi-step feature that exercises planning, building, review and shipping. One example for the whole page.
-- **The reader.** By default, someone who has never seen the workflow and works in a different repo.
+- **The workflow.** Default to cflow when the person names none. Find its source of truth: the entry skill (for cflow, `skills/cflow/SKILL.md`), the playbooks it routes to, and the setup skill. Read them. Every step and command on the page must trace to something the workflow actually says.
+- **The example.** One canned feature, the same one every time the page is regenerated for that workflow. For cflow it's the multi-user feature in the model answer. For another workflow, pick one realistic multi-step feature that exercises planning, building, review and shipping, and keep it.
+- **The reader.** Someone who has never seen the workflow and works in a different repo. Later, the same person who just needs a reminder.
+
+## The page
+
+One self-contained HTML file with two tabs. Keep the model answer's script: it opens on **Get started** until the reader clicks **I'm set up ✓**, then always opens on **Cheat sheet**. "Show setup again" undoes that. Give `FLOW_KEY` a value unique to the workflow.
+
+**Get started tab**
+
+1. **Prerequisites.** First "What you need": the tools, subscriptions and kinds of models the workflow is built for, and why each matters, such as "more than one Claude Max plan, because agents run in parallel" or "a ChatGPT plan, for cross-model review". Then the setup steps, split into "once per computer" and "once per repo" and lettered A, B, C…, with exact commands.
+2. **Step by step.** The canned feature, using the workflow's own phase boundaries, with one table per phase and numbered steps. Each step has an owner badge (you or agent). Green rows are the human gates, and each says what the human decides. Under the intro, answer the question a newcomer asks first in two or three sentences.
+
+End the tab with the **I'm set up ✓** button.
+
+**Cheat sheet tab**
+
+A card that fits one screen and prints on one landscape page.
+
+- **The turn.** One column per phase, in order, like the phases on a game card. Under each phase are 1–3 things the **human** types or decides there.
+- **Anytime.** The commands the human reaches for between phases, each with a few words on when.
+- **Footer.** The human's gates in one line, plus the Print and Show setup again links.
+
+Only commands the human types belong here. Leave out anything only agents run.
 
 ## Rules
 
-1. **Agnostic.** Nothing specific to the author's machines, accounts, repos, people, in-flight PRs or private hosts. Write "your repo", "the app", "your standing orders". The page must work when pasted to a friend. If a step only exists because of the author's setup, drop it or state it generically. One exception: the workflow's own public install source (its clone URL and setup commands) stays, because the reader needs it.
-2. **Every step has an owner.** Number the steps and give each a Who column: 🧑 for the human, 🤖 for an agent. Use one table per phase.
-3. **Setup comes first, as step 0.** Split it into "once per computer" and "once per repo". Give exact commands for install and configuration (clone, the install script, the setup slash command). These are lettered A, B, C… so the feature steps keep numbers 1, 2, 3….
-4. **Then the feature, phase by phase.** Use the workflow's own phase boundaries (for cflow: idea → plan, plan → merged, merged → understood). Bold the human gates, and say for each gate what the human decides and that the agents keep going on reversible work meanwhile, if the workflow says so.
-5. **Answer the obvious question up front.** Below the intro, answer the question a newcomer asks first in two or three sentences (for cflow: "do you discuss the feature with the agent first?").
-6. **End with two summaries.** First "Your part, all in one place": setup steps, then per-feature steps with their step numbers. Then "Commands you'll actually type": a table of command or phrase, and when to use it.
-7. **Plain English.** Short sentences. No long dashes. Name each mechanism once in plain words (for example, "a script-backed skill that starts your app and drives it like a real user"), not by internal jargon alone. Run the prose through the **unslop** skill.
-8. **One page.** Aim for the example's length. Cut anything that doesn't change what the reader does.
+1. **Agnostic and private.** Nothing about the author's machines, accounts, repos, people, PRs or private hosts. Never state prices, plan counts or spending. Describe the kind of plan, like "more than one Max plan works best". Write "your repo" and "the app". The workflow's own public install command stays.
+2. **Plain English.** Short sentences, no long dashes. Name each mechanism once in plain words, not internal jargon alone. Run the prose through the **unslop** skill.
+3. **Cut hard.** If a line doesn't change what the reader does, it goes. The cheat sheet must fit one screen at 1280×800.
+4. **Self-contained.** Inline CSS and JS, no external requests, light and dark via `prefers-color-scheme`, readable on a phone.
 
 ## Steps
 
-1. Read the workflow's source files and list its phases, gates, setup commands and user-facing commands, each with the file and line it came from.
-2. Pick the example, and map every workflow step onto it with concrete example details (what the human types, what the agent checks, which questions only the human can answer).
-3. Write the page in the shape of `references/example-cflow.md`.
-4. Check it against the rules above, rule 1 first. Search the page for the author's names, hostnames, repo names and PR numbers, and remove any that remain, except the workflow's own install source (rule 1).
-5. Save it where the person asks. Otherwise use `docs/how-<workflow>-works.md` in the workflow's repo, or a shared folder when there's no repo. Reply with the path and one line on the example you used.
+1. Read the workflow's source files. List its phases, human gates, setup commands and user-typed commands, each with the file it came from.
+2. Map every phase onto the canned example with concrete details.
+3. Write the page from `references/how-cflow-works.html`.
+4. Check it against the rules, rule 1 first. Search the page for names, hostnames, repo names, PR numbers, prices and plan counts.
+5. Open it in a browser if you can. Confirm both tabs, the I'm-set-up memory across a reload, and that the cheat sheet fits one screen.
+6. Save it where the person asks. Otherwise save `how-<workflow>-works.html` in the current folder. Reply with the path and a one-line suggestion to open it in a browser.
