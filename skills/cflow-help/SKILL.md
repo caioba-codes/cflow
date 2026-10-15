@@ -84,7 +84,7 @@ The default answer is `/cflow`, which runs most of the others when its steps nee
 | Vet a performance number before reporting or acting on it | [`/benchmark-checklist`](../benchmark-checklist/SKILL.md) |
 | Run a large or cross-cutting change, or one to review after stepping away | [`/figure-it-out`](../figure-it-out/SKILL.md) |
 | Keep a decision log during a run, and review it afterward | [`/show-me-your-work`](../show-me-your-work/SKILL.md) |
-| Teach someone how a workflow works, with a worked example | `/explain-flow` |
+| Get a setup guide and a one-screen cheat sheet for cflow or any workflow | `/explain-flow` |
 | Understand a feature the agents shipped, as one page with a quiz | [`/explain-diff`](../explain-diff/SKILL.md) |
 | Pick a model for each role and a reasoning budget | [`/setup-cflow`](../setup-cflow/SKILL.md) |
 | Turn their own working habits into a personal mode skill | [`/automate-me`](../automate-me/SKILL.md) |
