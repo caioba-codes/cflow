@@ -11,7 +11,7 @@ disable-model-invocation: true
 ## Inputs
 
 - **The workflow.** Default to cflow when the person names none. Find its source of truth: the entry skill (for cflow, `skills/cflow/SKILL.md`), the playbooks it routes to, and the setup skill. Read them. Every step and command on the page must trace to something the workflow actually says.
-- **The example.** One canned feature, the same one every time the page is regenerated for that workflow. For cflow it's the multi-user feature in the model answer. For another workflow, pick one realistic multi-step feature that exercises planning, building, review and shipping, and keep it.
+- **The example.** One canned feature, the same one every time the page is regenerated for that workflow. For cflow it's the comments feature in the model answer. For another workflow, pick one realistic multi-step feature that exercises planning, building, review and shipping, and keep it.
 - **The reader.** Someone who has never seen the workflow and works in a different repo. Later, the same person who just needs a reminder.
 
 ## The page
@@ -21,7 +21,7 @@ One self-contained HTML file with two tabs. Keep the model answer's script: it o
 **Get started tab**
 
 1. **Prerequisites.** First "What you need": the tools, subscriptions and kinds of models the workflow is built for, and why each matters, such as "more than one Claude Max plan, because agents run in parallel" or "a ChatGPT plan, for cross-model review". Then the setup steps, split into "once per computer" and "once per repo" and lettered A, B, C…, with exact commands.
-2. **Step by step.** The canned feature, using the workflow's own phase boundaries, with one table per phase and numbered steps. Each step has an owner badge (you or agent). Green rows are the human gates, and each says what the human decides. Under the intro, answer the question a newcomer asks first in two or three sentences.
+2. **Step by step.** The canned feature, using the workflow's own phase boundaries, with one table per phase and numbered steps. Number only the human's steps. Green rows are the human gates, and each says what the human decides. Fold each run of agent steps into one collapsed agent row (a `<details>` with a short summary like "It plans the feature"), since the reader doesn't need them to use the workflow. Under the intro, answer the question a newcomer asks first in two or three sentences.
 
 End the tab with the **I'm set up ✓** button.
 
