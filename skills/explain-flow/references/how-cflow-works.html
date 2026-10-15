@@ -67,7 +67,7 @@ h1 svg.ico { width: 40px; height: 34px; }
 .flow .you > div { background: var(--you-soft); border-radius: 10px; padding: 10px 14px; }
 .flow .agent details { color: var(--muted); font-size: 15px; }
 .flow .agent summary { cursor: pointer; display: inline-flex; align-items: center; gap: 8px; padding: 2px 0; }
-.flow .agent summary svg { width: 22px; height: 17px; position: absolute; left: 2px; top: 5px; background: var(--bg); }
+.flow .agent summary svg { width: 22px; height: 19px; position: absolute; left: 2px; top: 3px; background: var(--bg); }
 .flow .agent ul { margin: 6px 0 4px; padding-left: 18px; }
 .flow .agent li { margin: 3px 0; }
 
@@ -182,18 +182,18 @@ main.wide { max-width: 1280px; }
 <ol class="flow">
   <li class="phase">Idea → plan</li>
   <li class="you"><span class="num">1</span><div><b>Talk it out.</b> Dictate the whole idea to your computer for a few minutes, start to finish: comments on posts, who can comment, what the author gets notified about. Long and messy is fine. More context makes a better plan, and you get better at prompting every time.</div></li>
-  <li class="agent"><details><summary><svg><use href="#i-crab"/></svg>It reads your code and tests its ideas</summary><ul>
+  <li class="agent"><details><summary><svg><use href="#i-bear"/></svg>It reads your code and tests its ideas</summary><ul>
     <li>Subagents read the parts that matter: posts, sign-in, the database, notifications.</li>
     <li>Quick throwaway experiments answer what a test can answer, like "can the app already send email?".</li>
   </ul></details></li>
   <li class="you"><span class="num">2</span><div>Answer a few product questions. Each comes with a recommended answer: "Can people edit a comment?", "Email or in-app notifications?"</div></li>
-  <li class="agent"><details><summary><svg><use href="#i-crab"/></svg>It writes the plan</summary><ul>
+  <li class="agent"><details><summary><svg><use href="#i-bear"/></svg>It writes the plan</summary><ul>
     <li>One part per pull request: storing comments, the comment box, notifications. Each says how it will be tested.</li>
   </ul></details></li>
   <li class="you"><span class="num">3</span><div>Say <b>GO</b>, plus <b>autopilot-full</b> (agents merge everything) or <b>autopilot-stack</b> (you do the final merge).</div></li>
 
   <li class="phase">Plan → merged</li>
-  <li class="agent"><details><summary><svg><use href="#i-crab"/></svg>It builds, tests and reviews each part</summary><ul>
+  <li class="agent"><details><summary><svg><use href="#i-bear"/></svg>It builds, tests and reviews each part</summary><ul>
     <li>One agent per part, in parallel. Each tests its change on your running app.</li>
     <li>A different model, ideally GPT, reviews it and says PASS or FAIL. Only a PASS gets merged.</li>
   </ul></details></li>
