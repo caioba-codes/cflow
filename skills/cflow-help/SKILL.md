@@ -120,7 +120,7 @@ Playbooks are step lists inside `/cflow`, not skills, so they have no slash comm
 - "land the stack" runs Shipping.
 - "take over this branch" runs Session pickup.
 - "pause safely" runs Pause safely.
-- "full autopilot on this queue" runs Autopilot-full. "stack them, don't ship" runs Autopilot-stack.
+- "full autopilot on this queue" runs Autopilot-full. "stack them, don't ship" runs Autopilot-stack, which is also what any build runs when no autopilot is named.
 - "run the eval playbook" runs Eval.
 
 Without `/cflow`, a phrase such as "babysit this pr" can start Claude Code's PR activity subscription (`subscribe_pr_activity`) for the same job instead. The Playbooks section of [`cflow`](../cflow/SKILL.md) lists every playbook and when it applies. [Guide page 6](../../docs/guide/06-verify-and-ship.md) covers opening, babysitting, and landing a PR.
