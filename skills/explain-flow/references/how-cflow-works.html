@@ -163,18 +163,12 @@ main.wide { max-width: 1280px; }
 </div>
 
 <h2>Set up</h2>
-<h3>Once per computer</h3>
 <div class="rows">
   <div class="row"><div class="head"><span class="num">1</span><div class="step-body">Install cflow
     <div class="cmd"><code>git clone https://github.com/caioba-codes/cflow &amp;&amp; cflow/scripts/install.sh</code><button class="copy">Copy</button></div></div></div></div>
-  <div class="row"><div class="head"><span class="num">2</span><div class="step-body">In Claude Code, pick <b>large</b> when asked, confirm, then start a new chat
-    <div class="cmd"><code>/setup-cflow</code><button class="copy">Copy</button></div></div></div></div>
-</div>
-<h3>Once per project</h3>
-<div class="rows">
-  <details class="row"><summary><span class="num">3</span><div class="step-body">Teach the agents to use your app
-    <div class="cmd"><code>/create-verification-skill</code><button class="copy">Copy</button></div></div></summary>
-    <div class="more">The agent learns to open your app and use it like a person, so every change gets tested for real. This step pays off the most.</div></details>
+  <details class="row"><summary><span class="num">2</span><div class="step-body">Open Claude Code in your project and run this. Pick <b>large</b>, say yes when it offers to teach agents your app, then start a new chat
+    <div class="cmd"><code>/setup-cflow</code><button class="copy">Copy</button></div></div></summary>
+    <div class="more">Teaching agents your app means they open it and use it like a person, so every change gets tested for real. It pays off the most. In your other projects, cflow offers the same thing the first time you build something there.</div></details>
 </div>
 
 <h2>One feature, start to finish</h2>
