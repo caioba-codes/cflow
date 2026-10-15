@@ -52,6 +52,7 @@ h1 svg.ico { width: 40px; height: 34px; }
 .row .more { padding: 0 14px 12px 54px; color: var(--muted); font-size: 15px; }
 .row .more ul { margin: 0; padding-left: 18px; }
 .row .more li { margin: 4px 0; }
+.row .more p { margin: 0 0 8px; } .row .more p:last-child { margin: 0; }
 
 /* setup steps */
 .num { flex: none; width: 26px; height: 26px; border-radius: 50%; background: var(--ink); color: var(--bg); font-size: 13px; font-weight: 700; display: grid; place-items: center; }
@@ -166,9 +167,10 @@ main.wide { max-width: 1280px; }
 <div class="rows">
   <div class="row"><div class="head"><span class="num">1</span><div class="step-body">Install cflow
     <div class="cmd"><code>git clone https://github.com/caioba-codes/cflow &amp;&amp; cflow/scripts/install.sh</code><button class="copy">Copy</button></div></div></div></div>
-  <details class="row"><summary><span class="num">2</span><div class="step-body">Open Claude Code in your project and run this. Pick <b>large</b>, say yes when it offers to teach agents your app, then start a new chat
+  <details class="row"><summary><span class="num">2</span><div class="step-body">Open Claude Code in your project and run this. Pick <b>large</b>, say yes when it offers to create a verification skill, then start a new chat
     <div class="cmd"><code>/setup-cflow</code><button class="copy">Copy</button></div></div></summary>
-    <div class="more">Teaching agents your app means they open it and use it like a person, so every change gets tested for real. It pays off the most. In your other projects, cflow offers the same thing the first time you build something there.</div></details>
+    <div class="more"><p>A verification skill is a small skill saved in your project (<code>.claude/skills/verify-&lt;app&gt;/</code>) that teaches agents to use your app like a person: how to start it, how to click or type through it, and what proves each feature works. To create it, <code>/create-verification-skill</code> reads your code and asks you only what the code can't answer. Then it tests the skill once on your app before handing it over.</p>
+    <p>After that, every agent checks its change by actually using your app, not just by reading the code. It pays off more than any other step. Commit it so everyone's agents share it. In your other projects, cflow offers to create one the first time you build something there.</p></div></details>
 </div>
 
 <h2>One feature, start to finish</h2>
