@@ -11,7 +11,7 @@ switch.
 
 ## Find the runtime
 
-Use `$SUBSWITCH_HOME` when set; otherwise use `~/stuff/projects/subswitch`. If
+Use `$SUBSWITCH_HOME` when set; otherwise use `~/subswitch`. If
 the checkout is missing, clone `https://github.com/Gus1403/subswitch.git` there.
 
 Before installing, repairing, updating, or enrolling accounts, read the
