@@ -39,6 +39,11 @@ td.w { width: 44px; }
 .who.you { background: var(--you-soft); color: var(--you); }
 .who.agent { background: var(--agent-soft); color: var(--agent); }
 .gate td { background: var(--you-soft); }
+.agents td { color: var(--muted); padding-top: 6px; padding-bottom: 6px; }
+.agents summary { cursor: pointer; font-size: 14px; }
+.agents summary:hover { color: var(--ink); }
+.agents ul { margin: 6px 0 2px; padding-left: 18px; font-size: 14.5px; color: var(--ink); }
+.agents li { margin: 4px 0; }
 ul.needs { padding-left: 20px; }
 ul.needs li { margin: 6px 0; }
 .note { border-left: 3px solid var(--accent); background: var(--accent-soft); padding: 10px 14px; border-radius: 0 8px 8px 0; margin: 14px 0; }
@@ -112,37 +117,49 @@ ul.needs li { margin: 6px 0; }
 </table>
 
 <h2>2. Step by step: one feature</h2>
-<p>The example: adding multi-user accounts to an app that today serves one person. Your feature will differ, but the steps are the same. Green rows are where you decide something. The agents do the rest.</p>
+<p>The example: letting people comment on posts in your app, with a notification to the post's author. Your feature will differ, but the steps are the same. Green rows are where you decide something. The agents do the rest; open their rows only if you're curious.</p>
 <div class="note"><b>Do you discuss the feature with the agent first?</b> Not as a separate step. Your first message is the brief. The agent reads the code and runs small tests to settle what it can, then asks you only the product questions no test can answer. Want an interview first? Start with <code>/cflow grill me first</code>.</div>
 
 <h3>Idea → plan</h3>
 <table>
   <tr><th>#</th><th>Who</th><th>What happens</th></tr>
-  <tr class="gate"><td class="n">1</td><td class="w"><span class="who you">you</span></td><td>Write the idea in a couple of lines: "Make the app multi-user. Each user has their own data and their own connected accounts, with a cheap paid tier."</td></tr>
-  <tr><td class="n">2</td><td class="w"><span class="who agent">agent</span></td><td>It recognizes a multi-PR feature and runs the <b>Multi-phase plan</b> playbook. The plan is the deliverable. Nothing gets built yet.</td></tr>
-  <tr><td class="n">3</td><td class="w"><span class="who agent">agent</span></td><td>Subagents read the code that matters (where users are identified, sessions, permissions, deploys).</td></tr>
-  <tr><td class="n">4</td><td class="w"><span class="who agent">agent</span></td><td>Small throwaway prototypes settle every question a test can answer, like "does row-level security really keep two users apart?". Results go in the plan.</td></tr>
-  <tr class="gate"><td class="n">5</td><td class="w"><span class="who you">you</span></td><td><b>Product calls.</b> A handful of cards with options and a recommendation: "Paid tier: hard budget cap or real billing?", "Can admins read users' data?". The agent keeps working on its recommended option meanwhile.</td></tr>
-  <tr><td class="n">6</td><td class="w"><span class="who agent">agent</span></td><td>It writes the plan: one section per PR, each with tests, a live proof and who merges it. PRs users will see are marked review-gated. Then it stops.</td></tr>
-  <tr class="gate"><td class="n">7</td><td class="w"><span class="who you">you</span></td><td><b>GO.</b> The one big gate. Pick how it ships: <b>autopilot-full</b> (agents merge each verified PR) or <b>autopilot-stack</b> (they line up a verified chain and you merge it).</td></tr>
+  <tr class="gate"><td class="n">1</td><td class="w"><span class="who you">you</span></td><td>Write the idea in a couple of lines: "Let people comment on posts. The post's author gets notified of new comments."</td></tr>
+  <tr class="agents"><td></td><td class="w"><span class="who agent">agent</span></td><td><details><summary>It plans the feature</summary><ul>
+    <li>It recognizes a multi-PR feature and runs the <b>Multi-phase plan</b> playbook. The plan is the deliverable. Nothing gets built yet.</li>
+    <li>Subagents read the code that matters (posts, sign-in, the database, how notifications go out).</li>
+    <li>Small throwaway prototypes settle every question a test can answer, like "can the app already send emails, or only in-app alerts?". Results go in the plan.</li>
+  </ul></details></td></tr>
+  <tr class="gate"><td class="n">2</td><td class="w"><span class="who you">you</span></td><td><b>Product calls.</b> A handful of cards with options and a recommendation: "Can people edit a comment after posting?", "Notify by email or in the app only?". The agent keeps working on its recommended option meanwhile.</td></tr>
+  <tr class="agents"><td></td><td class="w"><span class="who agent">agent</span></td><td><details><summary>It writes the plan</summary><ul>
+    <li>One section per PR (storing comments, the comment box, notifications), each with tests, a live proof and who merges it. PRs users will see are marked review-gated. Then it stops.</li>
+  </ul></details></td></tr>
+  <tr class="gate"><td class="n">3</td><td class="w"><span class="who you">you</span></td><td><b>GO.</b> The one big gate. Pick how it ships: <b>autopilot-full</b> (agents merge each verified PR) or <b>autopilot-stack</b> (they line up a verified chain and you merge it).</td></tr>
 </table>
 
 <h3>Plan → merged</h3>
 <table>
   <tr><th>#</th><th>Who</th><th>What happens</th></tr>
-  <tr><td class="n">8</td><td class="w"><span class="who agent">agent</span></td><td>One agent per PR, in parallel. Each builds in small commits, tests behavior and proves the change on the running app with the verify skill.</td></tr>
-  <tr><td class="n">9</td><td class="w"><span class="who agent">agent</span></td><td><b>Independent review.</b> Reviewers that didn't write the code (ideally GPT) re-run the checks and the live proof and say PASS or FAIL. Green CI alone never merges anything.</td></tr>
-  <tr class="gate"><td class="n">10</td><td class="w"><span class="who you">you</span></td><td><b>Review-gated PRs only:</b> approve the screenshots or video of a change users will see.</td></tr>
-  <tr><td class="n">11</td><td class="w"><span class="who agent">agent</span></td><td>It merges on PASS plus green CI.</td></tr>
-  <tr class="gate"><td class="n">12</td><td class="w"><span class="who you">you</span></td><td><b>Deploys and anything irreversible</b> (emailing users, deleting data). The agent asks once, in one line, with a recommended default.</td></tr>
+  <tr class="agents"><td></td><td class="w"><span class="who agent">agent</span></td><td><details><summary>It builds, proves and reviews each PR</summary><ul>
+    <li>One agent per PR, in parallel. Each builds in small commits, tests behavior and proves the change on the running app with the verify skill.</li>
+    <li><b>Independent review.</b> Reviewers that didn't write the code (ideally GPT) re-run the checks and the live proof and say PASS or FAIL. Green CI alone never merges anything.</li>
+  </ul></details></td></tr>
+  <tr class="gate"><td class="n">4</td><td class="w"><span class="who you">you</span></td><td><b>Review-gated PRs only:</b> approve the screenshots or video of a change users will see, like the new comment box.</td></tr>
+  <tr class="agents"><td></td><td class="w"><span class="who agent">agent</span></td><td><details><summary>It merges</summary><ul>
+    <li>Only on PASS plus green CI.</li>
+  </ul></details></td></tr>
+  <tr class="gate"><td class="n">5</td><td class="w"><span class="who you">you</span></td><td><b>Deploys and anything irreversible</b>, like turning on emails to real users. The agent asks once, in one line, with a recommended default.</td></tr>
 </table>
 
 <h3>Merged → you understand it</h3>
 <table>
   <tr><th>#</th><th>Who</th><th>What happens</th></tr>
-  <tr><td class="n">13</td><td class="w"><span class="who agent">agent</span></td><td>When the last PR lands, it writes one explainer page with <code>/explain-diff</code>: background, the core idea, a code walkthrough and a 5-question quiz.</td></tr>
-  <tr class="gate"><td class="n">14</td><td class="w"><span class="who you">you</span></td><td>Read it and take the quiz. That's how you keep understanding your codebase without reading every diff.</td></tr>
-  <tr><td class="n">15</td><td class="w"><span class="who agent">agent</span></td><td>Anything you correct twice becomes structure (a test, a lint rule, a type), not another note in a doc.</td></tr>
+  <tr class="agents"><td></td><td class="w"><span class="who agent">agent</span></td><td><details><summary>It explains what changed</summary><ul>
+    <li>When the last PR lands, it writes one explainer page with <code>/explain-diff</code>: background, the core idea, a code walkthrough and a 5-question quiz.</li>
+  </ul></details></td></tr>
+  <tr class="gate"><td class="n">6</td><td class="w"><span class="who you">you</span></td><td>Read it and take the quiz. That's how you keep understanding your codebase without reading every diff.</td></tr>
+  <tr class="agents"><td></td><td class="w"><span class="who agent">agent</span></td><td><details><summary>It learns from your corrections</summary><ul>
+    <li>Anything you correct twice becomes structure (a test, a lint rule, a type), not another note in a doc.</li>
+  </ul></details></td></tr>
 </table>
 
 <div class="done no-print">
