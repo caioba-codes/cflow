@@ -1,8 +1,8 @@
 # cflow v3 = pstack, adapted
 
-cflow v3 is [pstack](https://github.com/cursor/plugins/tree/main/pstack) by Lauren Tan (poteto), imported verbatim from `cursor/plugins@d0ef80d` (MIT, see `LICENSE-pstack`). Caio's rule (2026-10-07): **keep it exactly like pstack unless the text is about a tool he doesn't use.** Only those spots change. Wording, structure, principles, playbooks and rigor stay as written.
+cflow v3 is [pstack](https://github.com/cursor/plugins/tree/main/pstack) by Lauren Tan (poteto), first imported from `cursor/plugins@d0ef80d` and re-ported to `cursor/plugins@6ce45c5` (MIT, see `LICENSE-pstack`). Caio's rule (2026-10-07): **keep it exactly like pstack unless the text is about a tool he doesn't use.** Only those spots change. Wording, structure, principles, playbooks and rigor stay as written.
 
-This file is the mapping every change follows. When pstack updates upstream, re-import and re-apply this table.
+This file is the mapping every change follows. When pstack updates upstream, re-import and re-apply this table. The cleanest re-port is a three-way merge per file: base is the last imported pstack commit, ours is cflow, theirs is the new pstack, with the Names table applied to base and theirs first. Then map the Cursor-only text the merge brought in and re-check the Added list.
 
 ## Names
 
@@ -32,8 +32,11 @@ Principle skills, playbooks and every other skill keep their names.
 | `~/.cursor/rules/pstack-models.mdc` (`alwaysApply`) | `~/.claude/cflow-models.md`, imported from `~/.claude/CLAUDE.md` with `@cflow-models.md` and from `~/.codex/AGENTS.md` |
 | `~/.cursor/projects/<slug>/agent-transcripts` | `~/.claude/projects/<slug>/*.jsonl` |
 | Cursor's built-in `create-skill` | the `skill-creator` skill |
-| Cursor's built-in `babysit` skill | Claude Code's PR activity subscription (`subscribe_pr_activity`) — cflow's Babysit playbook still owns the behavior |
+| Cursor's built-in `babysit` skill | Claude Code's PR activity subscription (`subscribe_pr_activity`). cflow's Babysit playbook still owns the behavior |
 | Cursor Automations (cloud agents on a schedule/trigger) | Claude Code routines (`create_trigger`) and cloud sessions |
+| a Cursor cloud agent, `environment: "cloud"` | a Claude Code cloud session |
+| "the root agent's store (path in the system prompt)" | the path the root names in the owner's brief |
+| `/visualize` charts and diagrams | a `visualize` widget in a Claude Projects thread, or the `dataviz` skill |
 | "coordinator chat" (Orchestrate playbook) | the Claude Projects project chat; each child job is a project thread |
 | Bugbot, Cursor's agentic security review | Claude Code Review (GitHub app), `/code-review`, `/security-review` |
 | `deslop` from `cursor-team-kit` | the `simplify` skill (`/simplify`) |
@@ -60,10 +63,13 @@ Effort ladder stays pstack's (`max` > `xhigh` > `high` > `medium` > `low`); both
 
 Every default runs at `xhigh`, as in pstack (whose defaults are all `xhigh`; Grok's speed came from the model, not a lower effort). The budget question in `/setup-cflow` scales all of them together, so `small` brings everything to `medium`.
 
+That is each role's starting level. Per spawn, the `cflow` skill's **Match the model to the job** tiers it as pstack does: one step up for the hardest work, one step down for judgment, two or more down for routine work, and verification stays on the `swarm workers` level. cflow changes only the effort (the Agent tool's `effort`, or `model_reasoning_effort` for a `codex exec` seat). pstack's fast-mode clause (`-fast` slugs, used only when CI or trunk is red or a person is blocked) is dropped: neither the Agent tool nor `codex exec` has a per-spawn fast mode. Every playbook's "Pick each subagent's reasoning level and fast or standard speed" line reads "Pick each subagent's reasoning level". The `cursor-grok-*` and `composer-*` families in arena and interrogate are dropped with Grok.
+
 ## Dropped
 
 - `make-bot-ui` (removed): it is entirely about Cursor's Grok Bot webhook routines, which Caio doesn't use and which have no Claude equivalent.
 - The Cursor app-support cache item in the Worktree cleanup playbook.
+- The "pick `/poteto-mode` from the `/` menu so Cursor attaches the skill" note and the plugin manifests (`plugin.json`, `.cursor-plugin/`): Cursor packaging. `scripts/install.sh` installs cflow instead.
 
 ## Added (not in pstack)
 
@@ -71,3 +77,7 @@ Every default runs at `xhigh`, as in pstack (whose defaults are all `xhigh`; Gro
 - `explain-flow` (Caio, 2026-10-08; was `explain-workflow`, moved to cskills 2026-10-10, back into cflow 2026-10-14 so cflow installs on its own): writes a one-page, agnostic "how this workflow works" guide around one worked example, with every step marked human or agent. It writes an HTML page with a Get started tab (prerequisites, one canned feature step by step) and a one-screen cheat sheet tab. Its `references/how-cflow-works.html` is the model answer and cflow's own page.
 - `grilling` (Caio, 2026-10-11): Matt Pocock's skill, brought back as an opt-in interview before a playbook, because pstack's few product cards leave fuzzy ideas under-specified. It keeps `disable-model-invocation: true` and runs only when the user asks ("grill me", "grill me first", `/grilling`). Wired in through one `cflow` trigger. Matt's text is unchanged apart from two added sentences: questions go through `AskUserQuestion` or one `ask_decision` card each, and the confirmed brief is handed back to the matched playbook. Keep the trigger and both sentences when re-importing upstream.
 - Try-it-yourself-first (Caio, 2026-10-11): an agent sent Caio Supabase dashboard click-steps it could have done with the admin API. One `**Try it yourself before handing the human a step.**` paragraph in the `cflow` skill's Autonomy section and one Pattern bullet in `principle-never-block-on-the-human`: API or CLI first, then browser tools the session has, then the human, and only for an approval, an irreversible step, a secret or data only they have; an ask says what was tried. It narrows pstack's asks and leaves Always pause for irreversible writes untouched. Keep both when re-importing upstream.
+- First-feature verification offer (Caio, 2026-10-14): one `cflow` trigger. Starting a new feature in a repo with no way to drive the real app for proof (no `verify-*` skill, no harness), offer `/create-verification-skill` once before planning, run it on yes, never ask again in that chat on no. It is `/setup-cflow` step 7 for every repo after the first. Keep it when re-importing upstream.
+- Babysit's never-merge paragraph ("Watcher re-arms never authorize merging or arming merge-when-ready...") and its **Reply:** line: pstack cut both in `cursor/plugins#571`. cflow keeps them, because a watcher re-arm is where an agent most often mistakes green for permission to merge.
+- `/cflow` or the always-on line: pstack says the chat that receives `/poteto-mode` runs the playbook. cflow reads that as the chat that receives `/cflow` or loads the skill through the always-on line from `/setup-cflow`. `cflow-agent` is a delegate only, never the runner. With no path from its parent it reads `~/.claude/skills/cflow/SKILL.md` (Codex: `~/.codex/skills/cflow/SKILL.md`). `scripts/install.sh` copies `agents/*.md` to `~/.claude/agents/` so `subagent_type: "cflow-agent"` and `"comment-sicko"` resolve.
+- `subswitch`: an optional skill that keeps workers running across the user's own Claude and Codex accounts when one hits a session or usage limit. Not from pstack.
