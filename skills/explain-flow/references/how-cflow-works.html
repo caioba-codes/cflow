@@ -8,80 +8,124 @@
      FLOW_KEY below must be unique per workflow (it remembers "I'm set up" per workflow). -->
 <style>
 :root {
-  --bg: #f7f5f0; --card: #fffdf8; --ink: #1d1b16; --muted: #6b665c; --line: #e2ddd2;
-  --accent: #b5532a; --accent-soft: #f6e4da; --you: #2f6f4f; --you-soft: #e1efe6; --agent: #4a5a8a; --agent-soft: #e4e8f3;
+  --bg: #faf9f5; --card: #ffffff; --ink: #141413; --muted: #6f6d66; --line: #e6e3da;
+  --accent: #d97757; --you: #141413; --you-soft: #f0eee6; --code: #f0eee6;
 }
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #15140f; --card: #1e1c16; --ink: #ece7dc; --muted: #a39d90; --line: #35322a;
-    --accent: #e08458; --accent-soft: #3a261c; --you: #7cc49c; --you-soft: #1d3127; --agent: #9fb0e0; --agent-soft: #232a3d;
+    --bg: #141413; --card: #1c1c1a; --ink: #faf9f5; --muted: #a3a097; --line: #33322e;
+    --accent: #e08a6b; --you: #faf9f5; --you-soft: #24231f; --code: #262521;
   }
 }
 * { box-sizing: border-box; }
 body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.55 -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, sans-serif; }
-main { max-width: 860px; margin: 0 auto; padding: 24px 16px 64px; }
-h1 { font-size: 28px; margin: 0 0 4px; letter-spacing: -0.01em; }
-h2 { font-size: 20px; margin: 36px 0 10px; }
-h3 { font-size: 16px; margin: 22px 0 8px; }
+main { max-width: 1000px; margin: 0 auto; padding: 32px 16px 48px; }
+h1 { font-size: 28px; margin: 0 0 6px; letter-spacing: -0.01em; display: flex; align-items: center; gap: 10px; }
+h2 { font-size: 19px; margin: 40px 0 12px; }
+h3 { font-size: 13px; margin: 22px 0 8px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
 p { margin: 8px 0; }
-.sub { color: var(--muted); margin: 0 0 20px; }
-code { font: 13.5px/1.4 ui-monospace, SFMono-Regular, Menlo, monospace; background: var(--accent-soft); padding: 1px 5px; border-radius: 4px; white-space: pre-wrap; }
-.tabs { display: flex; gap: 6px; border-bottom: 1px solid var(--line); margin-bottom: 20px; }
-.tabs button { font: inherit; font-weight: 600; background: none; border: 0; border-bottom: 3px solid transparent; color: var(--muted); padding: 10px 14px; cursor: pointer; }
-.tabs button[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--accent); }
+.sub { color: var(--muted); margin: 0 0 22px; }
+code { font: 13.5px/1.4 ui-monospace, SFMono-Regular, Menlo, monospace; background: var(--code); padding: 1px 5px; border-radius: 4px; }
 [hidden] { display: none !important; }
-table { width: 100%; table-layout: fixed; border-collapse: collapse; margin: 8px 0 4px; font-size: 15px; }
-th, td { text-align: left; vertical-align: top; padding: 8px 10px; border-bottom: 1px solid var(--line); }
-th { font-size: 12px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted); }
-td.n { width: 34px; color: var(--muted); font-variant-numeric: tabular-nums; }
-td.w { width: 44px; }
-.who { display: inline-block; font-size: 12px; font-weight: 700; padding: 1px 7px; border-radius: 999px; }
-.who.you { background: var(--you-soft); color: var(--you); }
-.who.agent { background: var(--agent-soft); color: var(--agent); }
-.gate td { background: var(--you-soft); }
-.agents td { color: var(--muted); padding-top: 6px; padding-bottom: 6px; }
-.agents summary { cursor: pointer; font-size: 14px; }
-.agents summary:hover { color: var(--ink); }
-.agents ul { margin: 6px 0 2px; padding-left: 18px; font-size: 14.5px; color: var(--ink); }
-.agents li { margin: 4px 0; }
-ul.needs { padding-left: 20px; }
-ul.needs li { margin: 6px 0; }
-ol.setup { padding-left: 22px; }
-ol.setup li { margin: 8px 0; }
-.note { border-left: 3px solid var(--accent); background: var(--accent-soft); padding: 10px 14px; border-radius: 0 8px 8px 0; margin: 14px 0; }
-.done { margin: 32px 0 0; padding: 18px; border: 1px dashed var(--line); border-radius: 12px; text-align: center; }
-.btn { font: inherit; font-weight: 700; background: var(--accent); color: #fff; border: 0; border-radius: 999px; padding: 10px 20px; cursor: pointer; }
+svg.ico { flex: none; width: 28px; height: 28px; }
+h1 svg.ico { width: 34px; height: 34px; }
+
+/* tabs */
+.tabs { display: inline-flex; gap: 2px; padding: 3px; background: var(--code); border-radius: 10px; margin-bottom: 8px; }
+.tabs button { font: inherit; font-size: 14px; font-weight: 600; background: none; border: 0; border-radius: 8px; color: var(--muted); padding: 6px 14px; cursor: pointer; }
+.tabs button[aria-selected="true"] { background: var(--card); color: var(--ink); box-shadow: 0 1px 2px rgba(0,0,0,.08); }
+
+/* one row = one thing; details hold the why */
+.rows { border: 1px solid var(--line); border-radius: 12px; background: var(--card); overflow: hidden; }
+.row { border-top: 1px solid var(--line); }
+.row:first-child { border-top: 0; }
+.row > summary, .row > .head { list-style: none; display: flex; align-items: center; gap: 12px; padding: 12px 14px; }
+.row > summary { cursor: pointer; }
+.row > summary::-webkit-details-marker { display: none; }
+.row > summary::after { content: "›"; margin-left: auto; color: var(--muted); font-size: 20px; line-height: 1; transition: transform .15s; }
+.row[open] > summary::after { transform: rotate(90deg); }
+.row .tag { font-size: 12px; color: var(--muted); font-weight: 400; margin-left: 6px; }
+.row .more { padding: 0 14px 12px 54px; color: var(--muted); font-size: 15px; }
+.row .more ul { margin: 0; padding-left: 18px; }
+.row .more li { margin: 4px 0; }
+
+/* setup steps */
+.num { flex: none; width: 26px; height: 26px; border-radius: 50%; background: var(--ink); color: var(--bg); font-size: 13px; font-weight: 700; display: grid; place-items: center; }
+.cmd { display: flex; align-items: center; gap: 8px; margin-top: 6px; background: var(--code); border-radius: 8px; padding: 8px 8px 8px 12px; }
+.cmd code { background: none; padding: 0; overflow-wrap: anywhere; }
+.copy { margin-left: auto; flex: none; font: inherit; font-size: 12px; font-weight: 600; color: var(--muted); background: var(--card); border: 1px solid var(--line); border-radius: 6px; padding: 3px 8px; cursor: pointer; }
+.step-body { flex: 1; min-width: 0; }
+
+/* the feature, as a simple timeline */
+.flow { position: relative; margin: 0; padding: 0; list-style: none; }
+.flow::before { content: ""; position: absolute; left: 12px; top: 6px; bottom: 6px; width: 2px; background: var(--line); }
+#start, .sub { max-width: 760px; }
+.flow > li { position: relative; padding: 0 0 0 40px; margin: 0 0 10px; }
+.flow > .phase { font-size: 13px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); font-weight: 700; padding-top: 10px; }
+.flow > .phase::before { content: ""; position: absolute; left: 7px; top: 15px; width: 12px; height: 12px; border-radius: 50%; background: var(--bg); border: 2px solid var(--muted); }
+.flow .you .num { position: absolute; left: 0; top: 9px; background: var(--you); color: var(--bg); }
+.flow .you > div { background: var(--you-soft); border-radius: 10px; padding: 10px 14px; }
+.flow .agent details { color: var(--muted); font-size: 15px; }
+.flow .agent summary { cursor: pointer; display: inline-flex; align-items: center; gap: 8px; padding: 2px 0; }
+.flow .agent summary svg { width: 22px; height: 17px; position: absolute; left: 2px; top: 5px; background: var(--bg); }
+.flow .agent ul { margin: 6px 0 4px; padding-left: 18px; }
+.flow .agent li { margin: 3px 0; }
+
+.note { border-left: 3px solid var(--accent); padding: 4px 0 4px 14px; margin: 24px 0; color: var(--muted); }
+.done { margin: 32px 0 0; text-align: center; }
+.btn { font: inherit; font-weight: 700; background: var(--ink); color: var(--bg); border: 0; border-radius: 999px; padding: 11px 22px; cursor: pointer; }
 .link { font: inherit; background: none; border: 0; color: var(--muted); text-decoration: underline; cursor: pointer; padding: 0; }
-/* the card */
-.card { background: var(--card); border: 2px solid var(--ink); border-radius: 16px; padding: 18px; box-shadow: 0 2px 0 var(--line); }
-.card-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; border-bottom: 2px solid var(--ink); padding-bottom: 8px; margin-bottom: 12px; }
-.card-head h2 { margin: 0; font-size: 22px; }
+
+/* the cheat sheet card */
+.card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 18px; margin-top: 14px; }
+.card-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; padding-bottom: 10px; margin-bottom: 12px; border-bottom: 1px solid var(--line); }
+.card-head h2 { margin: 0; font-size: 20px; display: flex; align-items: center; gap: 8px; }
 .card-head span { color: var(--muted); font-size: 13px; }
 .turn { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
-.phase { border: 1px solid var(--line); border-radius: 10px; padding: 10px; background: var(--bg); }
-.phase h3 { margin: 0 0 6px; font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--accent); }
-.phase h3 b { color: var(--muted); font-weight: 600; margin-right: 4px; }
-.phase ul { margin: 0; padding-left: 16px; font-size: 13.5px; }
-.phase li { margin: 4px 0; }
-.anytime { margin-top: 12px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 4px 18px; font-size: 13.5px; }
-.anytime div { display: flex; gap: 8px; }
+.turn .phase { border-radius: 10px; padding: 10px; background: var(--bg); }
+.turn .phase h3 { margin: 0 0 6px; font-size: 12px; color: var(--accent); }
+.turn .phase h3 b { color: var(--muted); margin-right: 4px; }
+.turn .phase ul { margin: 0; padding-left: 16px; font-size: 13.5px; }
+.turn .phase li { margin: 4px 0; }
+.anytime { margin-top: 14px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px 18px; font-size: 13.5px; }
+.anytime div { display: flex; gap: 8px; align-items: baseline; }
+.anytime span { color: var(--muted); }
 .anytime code { flex: none; }
-.card-foot { margin-top: 12px; padding-top: 8px; border-top: 1px solid var(--line); font-size: 13px; color: var(--muted); display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
-@media (max-width: 760px) { .turn { grid-template-columns: 1fr 1fr; } .anytime { grid-template-columns: 1fr; } }
-@media (max-width: 460px) { .turn { grid-template-columns: 1fr; } }
+.card-foot { margin-top: 14px; padding-top: 10px; border-top: 1px solid var(--line); font-size: 13px; color: var(--muted); display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+@media (max-width: 860px) { .turn { grid-template-columns: 1fr 1fr; } .anytime { grid-template-columns: 1fr; } }
+@media (max-width: 460px) { .turn { grid-template-columns: 1fr; } .row .more { padding-left: 14px; } }
 @media print {
   body { background: #fff; color: #000; font-size: 12px; }
   main { padding: 0; max-width: none; }
   .tabs, #start, .no-print, h1, .sub { display: none !important; }
   #cheat { display: block !important; }
-  .card { box-shadow: none; }
   @page { size: landscape; margin: 10mm; }
 }
 </style>
 </head>
 <body>
+<!-- icons, drawn once and reused with <use> -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-crab" viewBox="0 0 16 12" shape-rendering="crispEdges">
+    <rect x="2" y="1" width="12" height="6" fill="#d97757"/><rect x="0" y="3" width="2" height="2" fill="#d97757"/><rect x="14" y="3" width="2" height="2" fill="#d97757"/>
+    <rect x="4" y="3" width="1" height="2" fill="#141413"/><rect x="11" y="3" width="1" height="2" fill="#141413"/>
+    <rect x="3" y="7" width="1" height="3" fill="#d97757"/><rect x="5" y="7" width="1" height="3" fill="#d97757"/><rect x="10" y="7" width="1" height="3" fill="#d97757"/><rect x="12" y="7" width="1" height="3" fill="#d97757"/>
+  </symbol>
+  <symbol id="i-codex" viewBox="0 0 24 24">
+    <rect x="1" y="1" width="22" height="22" rx="6" fill="#141413" stroke="#55534c" stroke-width="1"/>
+    <path d="M7 8l4 4-4 4" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M13 16h4" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+  </symbol>
+  <symbol id="i-github" viewBox="0 0 16 16">
+    <path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
+  </symbol>
+  <symbol id="i-app" viewBox="0 0 24 24">
+    <rect x="1.5" y="3" width="21" height="18" rx="3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M1.5 8h21" stroke="currentColor" stroke-width="2"/>
+    <circle cx="5" cy="5.6" r=".9" fill="currentColor"/><circle cx="8" cy="5.6" r=".9" fill="currentColor"/>
+    <path d="M10 11l7 3-3 1-1 3z" fill="currentColor"/>
+  </symbol>
+</svg>
 <main>
-<h1>How cflow works</h1>
+<h1><svg class="ico"><use href="#i-crab"/></svg>How cflow works</h1>
 <p class="sub">You give AI agents an idea. They plan it, build it, test it, review each other's work and merge it. You only step in at a few points.</p>
 
 <div class="tabs" role="tablist">
@@ -92,59 +136,65 @@ ol.setup li { margin: 8px 0; }
 <!-- ===================== GET STARTED ===================== -->
 <section id="start" role="tabpanel" aria-labelledby="tab-start">
 
-<h2>1. What you need</h2>
-<ul class="needs">
-  <li><b>Claude Code with a Claude Max plan.</b> Several agents run at once and use up limits fast, so more than one Max plan works best.</li>
-  <li><b>Codex with a ChatGPT plan.</b> A GPT model reviews the Claude agents' work and catches what they miss. Optional, but recommended.</li>
-  <li><b>GitHub</b>, with the <code>gh</code> command installed. That's where agents open and merge their changes.</li>
-  <li><b>Your app, running on your computer</b>, and a way for agents to use it: Claude in Chrome for web apps, tmux for command-line apps.</li>
-</ul>
+<h2>What you need</h2>
+<div class="rows">
+  <details class="row"><summary><svg class="ico"><use href="#i-crab"/></svg><b>Claude Code with a Claude Max plan</b></summary>
+    <div class="more">Several agents run at once and use up limits fast, so more than one Max plan works best.</div></details>
+  <details class="row"><summary><svg class="ico"><use href="#i-codex"/></svg><b>Codex with a ChatGPT plan</b><span class="tag">recommended</span></summary>
+    <div class="more">A GPT model reviews the Claude agents' work and catches what they miss.</div></details>
+  <details class="row"><summary><svg class="ico"><use href="#i-github"/></svg><b>GitHub</b></summary>
+    <div class="more">Agents open and merge their changes there. Install the <code>gh</code> command too.</div></details>
+  <details class="row"><summary><svg class="ico"><use href="#i-app"/></svg><b>Your app, running on your computer</b></summary>
+    <div class="more">Agents need a way to use it: Claude in Chrome for web apps, tmux for command-line apps.</div></details>
+</div>
 
-<h2>2. Set up</h2>
+<h2>Set up</h2>
 <h3>Once per computer</h3>
-<ol class="setup">
-  <li><code>git clone https://github.com/caioba-codes/cflow &amp;&amp; cflow/scripts/install.sh</code></li>
-  <li>Run <code>/setup-cflow</code> in Claude Code. Pick <b>large</b> when asked, confirm, then start a new chat.</li>
-</ol>
+<div class="rows">
+  <div class="row"><div class="head"><span class="num">1</span><div class="step-body">Install cflow
+    <div class="cmd"><code>git clone https://github.com/caioba-codes/cflow &amp;&amp; cflow/scripts/install.sh</code><button class="copy">Copy</button></div></div></div></div>
+  <div class="row"><div class="head"><span class="num">2</span><div class="step-body">In Claude Code, pick <b>large</b> when asked, confirm, then start a new chat
+    <div class="cmd"><code>/setup-cflow</code><button class="copy">Copy</button></div></div></div></div>
+</div>
 <h3>Once per project</h3>
-<ol class="setup" start="3">
-  <li>Run <code>/create-verification-skill</code>. The agent learns to open your app and use it like a person, so every change gets tested for real. This step pays off the most.</li>
-  <li>Add this line to the project's <code>AGENTS.md</code> or <code>CLAUDE.md</code>, so cflow is always on: <code>Load the cflow skill first for any build, fix or plan task.</code></li>
-</ol>
+<div class="rows">
+  <details class="row"><summary><span class="num">3</span><div class="step-body">Teach the agents to use your app
+    <div class="cmd"><code>/create-verification-skill</code><button class="copy">Copy</button></div></div></summary>
+    <div class="more">The agent learns to open your app and use it like a person, so every change gets tested for real. This step pays off the most.</div></details>
+  <details class="row"><summary><span class="num">4</span><div class="step-body">Add this line to the project's <code>AGENTS.md</code> or <code>CLAUDE.md</code>
+    <div class="cmd"><code>Load the cflow skill first for any build, fix or plan task.</code><button class="copy">Copy</button></div></div></summary>
+    <div class="more">It keeps cflow on in every chat. Without it, <code>/cflow</code> only covers one message.</div></details>
+</div>
 
-<h2>3. One feature, start to finish</h2>
-<p>Example: letting people comment on posts. Green rows are yours. Open an agent row only if you're curious.</p>
+<h2>One feature, start to finish</h2>
+<p class="sub">Example: letting people comment on posts. The numbered steps are yours. Open the agent lines only if you're curious.</p>
 
-<h3>Idea → plan</h3>
-<table>
-  <tr class="gate"><td class="n">1</td><td class="w"><span class="who you">you</span></td><td>Describe it in a line or two: "Let people comment on posts, and notify the post's author."</td></tr>
-  <tr class="agents"><td></td><td class="w"><span class="who agent">agent</span></td><td><details><summary>It reads your code and tests its ideas</summary><ul>
+<ol class="flow">
+  <li class="phase">Idea → plan</li>
+  <li class="you"><span class="num">1</span><div>Describe it in a line or two: "Let people comment on posts, and notify the post's author."</div></li>
+  <li class="agent"><details><summary><svg><use href="#i-crab"/></svg>It reads your code and tests its ideas</summary><ul>
     <li>Subagents read the parts that matter: posts, sign-in, the database, notifications.</li>
     <li>Quick throwaway experiments answer what a test can answer, like "can the app already send email?".</li>
-  </ul></details></td></tr>
-  <tr class="gate"><td class="n">2</td><td class="w"><span class="who you">you</span></td><td>Answer a few product questions. Each comes with a recommended answer: "Can people edit a comment?", "Email or in-app notifications?"</td></tr>
-  <tr class="agents"><td></td><td class="w"><span class="who agent">agent</span></td><td><details><summary>It writes the plan</summary><ul>
+  </ul></details></li>
+  <li class="you"><span class="num">2</span><div>Answer a few product questions. Each comes with a recommended answer: "Can people edit a comment?", "Email or in-app notifications?"</div></li>
+  <li class="agent"><details><summary><svg><use href="#i-crab"/></svg>It writes the plan</summary><ul>
     <li>One part per pull request: storing comments, the comment box, notifications. Each says how it will be tested.</li>
-  </ul></details></td></tr>
-  <tr class="gate"><td class="n">3</td><td class="w"><span class="who you">you</span></td><td>Say <b>GO</b>, plus <b>autopilot-full</b> (agents merge everything) or <b>autopilot-stack</b> (you do the final merge).</td></tr>
-</table>
+  </ul></details></li>
+  <li class="you"><span class="num">3</span><div>Say <b>GO</b>, plus <b>autopilot-full</b> (agents merge everything) or <b>autopilot-stack</b> (you do the final merge).</div></li>
 
-<h3>Plan → merged</h3>
-<table>
-  <tr class="agents"><td></td><td class="w"><span class="who agent">agent</span></td><td><details><summary>It builds, tests and reviews each part</summary><ul>
+  <li class="phase">Plan → merged</li>
+  <li class="agent"><details><summary><svg><use href="#i-crab"/></svg>It builds, tests and reviews each part</summary><ul>
     <li>One agent per part, in parallel. Each tests its change on your running app.</li>
     <li>A different model, ideally GPT, reviews it and says PASS or FAIL. Only a PASS gets merged.</li>
-  </ul></details></td></tr>
-  <tr class="gate"><td class="n">4</td><td class="w"><span class="who you">you</span></td><td>Approve screenshots of anything users will see, like the new comment box.</td></tr>
-  <tr class="gate"><td class="n">5</td><td class="w"><span class="who you">you</span></td><td>Say yes or no to deploys and anything that can't be undone, like emailing real users.</td></tr>
-</table>
+  </ul></details></li>
+  <li class="you"><span class="num">4</span><div>Approve screenshots of anything users will see, like the new comment box.</div></li>
+  <li class="you"><span class="num">5</span><div>Say yes or no to deploys and anything that can't be undone, like emailing real users.</div></li>
 
-<h3>Merged → you understand it</h3>
-<table>
-  <tr class="gate"><td class="n">6</td><td class="w"><span class="who you">you</span></td><td>Read the one-page explainer the agent writes and take its 5-question quiz. You keep understanding your code without reading every change.</td></tr>
-</table>
+  <li class="phase">Merged → you understand it</li>
+  <li class="you"><span class="num">6</span><div>Read the one-page explainer the agent writes and take its 5-question quiz. You keep understanding your code without reading every change.</div></li>
+</ol>
 
-<div class="note"><b>Does the agent interview you first?</b> No. Your first message is the brief, and it asks only what it can't figure out. Want an interview anyway? <code>/cflow grill me first</code>.</div>
+<p class="note"><b>Does the agent interview you first?</b> No. Your first message is the brief, and it asks only what it can't figure out. Want an interview anyway? <code>/cflow grill me first</code></p>
 
 <div class="done no-print">
   <button class="btn" id="set-up">I'm set up, show my cheat sheet</button>
@@ -154,23 +204,23 @@ ol.setup li { margin: 8px 0; }
 <!-- ===================== CHEAT SHEET ===================== -->
 <section id="cheat" role="tabpanel" aria-labelledby="tab-cheat" hidden>
 <div class="card">
-  <div class="card-head"><h2>cflow · one feature, one turn</h2><span>What you type or decide. The agents do everything else.</span></div>
+  <div class="card-head"><h2><svg class="ico"><use href="#i-crab"/></svg>One feature, one turn</h2><span>What you type or decide. The agents do the rest.</span></div>
   <div class="turn">
     <div class="phase"><h3><b>1</b>Idea</h3><ul>
       <li>Type the idea in plain words, or <code>/cflow &lt;idea&gt;</code></li>
       <li>Still fuzzy? <code>/cflow grill me first &lt;idea&gt;</code></li>
     </ul></div>
     <div class="phase"><h3><b>2</b>Plan</h3><ul>
-      <li>Tap the product cards</li>
+      <li>Answer the product questions</li>
       <li>Say <b>GO</b> + <b>autopilot-full</b> or <b>autopilot-stack</b></li>
     </ul></div>
     <div class="phase"><h3><b>3</b>Build</h3><ul>
-      <li>Approve screenshots on review-gated PRs</li>
+      <li>Approve screenshots of what users will see</li>
       <li><code>/cflow check on pr 123</code></li>
     </ul></div>
     <div class="phase"><h3><b>4</b>Ship</h3><ul>
       <li>Yes or no to each deploy</li>
-      <li>Yes or no to anything irreversible</li>
+      <li>Yes or no to anything that can't be undone</li>
     </ul></div>
     <div class="phase"><h3><b>5</b>Understand</h3><ul>
       <li>Read the explainer, take the quiz</li>
@@ -181,15 +231,15 @@ ol.setup li { margin: 8px 0; }
     <div><code>/cflow-help</code><span>which skill fits?</span></div>
     <div><code>/how &lt;question&gt;</code><span>how does X work</span></div>
     <div><code>/why &lt;question&gt;</code><span>why was X built this way</span></div>
-    <div><code>/interrogate</code><span>other models try to break a diff</span></div>
+    <div><code>/interrogate</code><span>other models try to break a change</span></div>
     <div><code>/bro</code><span>last message in plain words</span></div>
-    <div><code>/recall &lt;topic&gt;</code><span>rebuild your context on a topic</span></div>
+    <div><code>/recall &lt;topic&gt;</code><span>catch up on a topic</span></div>
     <div><code>/cflow i'm going to bed. land the stack.</code><span>overnight run</span></div>
     <div><code>/cflow pick up the last agent's work</code><span>resume a session</span></div>
-    <div><code>/reflect</code> · <code>/correct</code><span>turn lessons into skills or rules</span></div>
+    <div><code>/reflect</code> · <code>/correct</code><span>turn lessons into rules</span></div>
     <div><code>/setup-cflow</code><span>change models or budget</span></div>
   </div>
-  <div class="card-foot"><span>Your gates: idea · product cards · GO · screenshots · deploys · quiz</span><span class="no-print"><button class="link" onclick="window.print()">Print</button> · <button class="link" id="show-start">Show setup again</button></span></div>
+  <div class="card-foot"><span>You decide: idea · product questions · GO · screenshots · deploys · quiz</span><span class="no-print"><button class="link" onclick="window.print()">Print</button> · <button class="link" id="show-start">Show setup again</button></span></div>
 </div>
 </section>
 </main>
@@ -209,6 +259,13 @@ ol.setup li { margin: 8px 0; }
   tabs.cheat.onclick = function () { show("cheat"); };
   document.getElementById("set-up").onclick = function () { remember(true); show("cheat"); window.scrollTo(0, 0); };
   document.getElementById("show-start").onclick = function () { remember(false); show("start"); };
+  document.querySelectorAll(".copy").forEach(function (b) {
+    b.onclick = function (e) {
+      e.preventDefault(); e.stopPropagation();
+      var text = b.previousElementSibling.textContent;
+      try { navigator.clipboard.writeText(text).then(function () { b.textContent = "Copied"; setTimeout(function () { b.textContent = "Copy"; }, 1500); }); } catch (err) {}
+    };
+  });
   show(setUp ? "cheat" : "start");
 })();
 </script>

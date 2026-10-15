@@ -17,9 +17,9 @@ One self-contained HTML file with two tabs. Keep the model answer's script: it o
 
 Write it for two readers: an engineer, and a non-technical person who doesn't know what to buy or install. Use the **signal** skill's lens if it's installed.
 
-1. **What you need.** The tools, subscriptions and kinds of models, each with one short reason, such as "more than one Claude Max plan, because several agents run at once". Leave out optional extras and internal skill names.
-2. **Set up.** One numbered list split into "once per computer" and "once per project". Each item is an exact command or one plain action. One way in per step, never "say yes when offered, or run X".
-3. **One feature, start to finish.** The canned feature, one table per phase of the workflow, no header rows. Number only the human's steps, as green rows that say what to do or decide in one sentence. Fold each run of agent steps into one collapsed agent row (a `<details>` with a short summary like "It writes the plan"), and drop agent rows the reader can't act on. After the tables, answer the question a newcomer asks first in two sentences.
+1. **What you need.** One collapsed row per tool, subscription or kind of model: its icon and name on the row, one short reason inside, such as "more than one Claude Max plan, because several agents run at once". Leave out optional extras and internal skill names. Reuse the model answer's inline SVG icons and draw a simple new one when a tool has none.
+2. **Set up.** Numbered steps split into "once per computer" and "once per project". Each step is one plain line plus its exact command in a copy box. Any "why" goes in the collapsed part. One way in per step, never "say yes when offered, or run X".
+3. **One feature, start to finish.** The canned feature as one timeline, with the workflow's phases as labels on it. Number only the human's steps, as shaded boxes that say what to do or decide in one sentence. Fold each run of agent steps into one collapsed agent line (a `<details>` with a short summary like "It writes the plan"), and drop agent rows the reader can't act on. After the tables, answer the question a newcomer asks first in two sentences.
 
 End the tab with the **I'm set up, show my cheat sheet** button and nothing else.
 
@@ -39,6 +39,7 @@ Only commands the human types belong here. Leave out anything only agents run.
 2. **Plain English.** Short sentences, no long dashes. Name each mechanism once in plain words, not internal jargon alone. Run the prose through the **unslop** skill.
 3. **Cut hard.** If a line doesn't change what the reader does, it goes. The cheat sheet must fit one screen at 1280×800.
 4. **Self-contained.** Inline CSS and JS, no external requests, light and dark via `prefers-color-scheme`, readable on a phone.
+5. **Plain look.** Off-white and black, one small accent color. No gradients, hero sections or marketing copy. It should look like a good README, not a product homepage.
 
 ## Steps
 
