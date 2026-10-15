@@ -147,15 +147,15 @@ main.wide { max-width: 1280px; }
 <h2>What you need</h2>
 <div class="rows">
   <details class="row"><summary><svg class="ico"><use href="#i-crab"/></svg><b>Claude Code with a Claude Max plan</b></summary>
-    <div class="more">Several agents run at once and use up limits fast, so more than one Max plan works best.</div></details>
-  <details class="row"><summary><svg class="ico"><use href="#i-codex"/></svg><b>Codex with a ChatGPT plan</b><span class="tag">recommended</span></summary>
-    <div class="more">A GPT model reviews the Claude agents' work and catches what they miss.</div></details>
+    <div class="more">Claude Code runs the whole flow: it plans, writes the code and tests it. Several agents run at once and use up limits fast, so more than one Max plan works best. If you have more than one, run <code>/subswitch</code> once. When an account hits its limit, it moves the agents to another one and they keep going where they stopped.</div></details>
+  <details class="row"><summary><svg class="ico"><use href="#i-codex"/></svg><b>Codex with a ChatGPT Pro plan</b><span class="tag">recommended</span></summary>
+    <div class="more">Codex is OpenAI's coding agent. cflow uses its GPT model as a second opinion: it reviews every change the Claude agents make and says PASS or FAIL, and it argues against Claude in <code>/interrogate</code>. A model from another lab misses different things, so together they catch more. Get Pro, the big plan: reviews run on every change and smaller plans hit their limits fast.</div></details>
   <details class="row"><summary><svg class="ico"><use href="#i-mic"/></svg><b>Voice dictation</b><span class="tag">I use Superwhisper</span></summary>
-    <div class="more">You'll talk your ideas through instead of typing them. I use Superwhisper; Wispr Flow, your computer's built-in dictation or anything else works too.</div></details>
+    <div class="more">You'll talk your ideas through instead of typing them. I use Superwhisper; Wispr Flow, your computer's built-in dictation or anything else works too. A long, rambling, in-order explanation gives the agent much more to work with than a typed line, and you get better at it with practice.</div></details>
   <details class="row"><summary><svg class="ico"><use href="#i-github"/></svg><b>GitHub</b></summary>
-    <div class="more">Agents open and merge their changes there. Install the <code>gh</code> command too.</div></details>
+    <div class="more">Every change lands as a pull request, so you can see, review and undo anything. Agents open, review and merge them with the <code>gh</code> command. Install it and run <code>gh auth login</code> once.</div></details>
   <details class="row"><summary><svg class="ico"><use href="#i-app"/></svg><b>Your app, running on your computer</b></summary>
-    <div class="more">Agents need a way to use it: Claude in Chrome for web apps, tmux for command-line apps.</div></details>
+    <div class="more">Agents test every change by using your app the way a person would, so it has to be running where they can reach it. For web apps they drive Chrome with Claude in Chrome. For command-line apps they type into tmux. Step 3 below teaches them how.</div></details>
 </div>
 
 <h2>Set up</h2>
