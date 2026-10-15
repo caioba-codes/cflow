@@ -46,7 +46,7 @@ cflow spends extra tokens on subagents and review panels. That's the price of th
 - Rerun `/setup-cflow` and pick a smaller reasoning budget or cheaper models. A strong model in the main chat with cheaper, faster models in the code roles is a good split.
 - Set a role to `auto` or `inherit-parent` so it runs on the chat's own model.
 - Shorten a panel list. Each entry runs one subagent.
-- Save `/cflow` for work that needs rigor. A small, obvious edit doesn't.
+- Keep small asks small. cflow is always on, but a one- or two-file change with an obvious approach skips the plan, so say plainly when that's all you want ("just fix the typo").
 
 ## Run your first task
 
