@@ -76,24 +76,26 @@ h1 svg.ico { width: 48px; height: 30px; }
 .btn { font: inherit; font-weight: 700; background: var(--ink); color: var(--bg); border: 0; border-radius: 999px; padding: 11px 22px; cursor: pointer; }
 .link { font: inherit; background: none; border: 0; color: var(--muted); text-decoration: underline; cursor: pointer; padding: 0; }
 
-/* the cheat sheet card */
-.card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 18px; margin-top: 14px; }
+/* the cheat sheet card: the page widens and the text grows when this tab is open */
+main.wide { max-width: 1280px; }
+.card code { font-size: 14.5px; }
+.card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 22px 24px; margin-top: 14px; }
 .card-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; padding-bottom: 10px; margin-bottom: 12px; border-bottom: 1px solid var(--line); }
-.card-head h2 { margin: 0; font-size: 20px; display: flex; align-items: center; gap: 8px; }
-.card-head span { color: var(--muted); font-size: 13px; }
-.turn { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
-.turn .phase { border-radius: 10px; padding: 10px; background: var(--bg); }
-.turn .phase h3 { margin: 0 0 6px; font-size: 12px; color: var(--accent); }
+.card-head h2 { margin: 0; font-size: 24px; display: flex; align-items: center; gap: 8px; }
+.card-head span { color: var(--muted); font-size: 15px; }
+.turn { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+.turn .phase { border-radius: 10px; padding: 14px; background: var(--bg); border: 1px solid var(--line); }
+.turn .phase h3 { margin: 0 0 8px; font-size: 13px; color: var(--accent); }
 .turn .phase h3 b { color: var(--muted); margin-right: 4px; }
-.turn .phase ul { margin: 0; padding-left: 16px; font-size: 13.5px; }
+.turn .phase ul { margin: 0; padding-left: 18px; font-size: 16px; }
 .turn .phase li { margin: 4px 0; }
-.anytime { margin-top: 14px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px 18px; font-size: 13.5px; }
+.anytime { margin-top: 18px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px 24px; font-size: 15.5px; }
 .anytime div { display: flex; gap: 8px; align-items: baseline; }
 .anytime span { color: var(--muted); }
 .anytime code { flex: none; }
-.card-foot { margin-top: 14px; padding-top: 10px; border-top: 1px solid var(--line); font-size: 13px; color: var(--muted); display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.card-foot { margin-top: 18px; padding-top: 12px; border-top: 1px solid var(--line); font-size: 14.5px; color: var(--muted); display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
 @media (max-width: 860px) { .turn { grid-template-columns: 1fr 1fr; } .anytime { grid-template-columns: 1fr; } }
-@media (max-width: 460px) { .turn { grid-template-columns: 1fr; } .row .more { padding-left: 14px; } }
+@media (max-width: 460px) { .turn { grid-template-columns: 1fr; } .row .more { padding-left: 14px; } .anytime div { flex-wrap: wrap; } .anytime code { flex: initial; overflow-wrap: anywhere; } .card { padding: 16px; } }
 @media print {
   body { background: #fff; color: #000; font-size: 12px; }
   main { padding: 0; max-width: none; }
@@ -259,6 +261,7 @@ h1 svg.ico { width: 48px; height: 30px; }
   var panels = { start: document.getElementById("start"), cheat: document.getElementById("cheat") };
   function show(name) {
     for (var k in panels) { panels[k].hidden = k !== name; tabs[k].setAttribute("aria-selected", String(k === name)); }
+    document.querySelector("main").classList.toggle("wide", name === "cheat");
   }
   function remember(v) { try { v ? localStorage.setItem(FLOW_KEY, "1") : localStorage.removeItem(FLOW_KEY); } catch (e) {} }
   var setUp = false;
