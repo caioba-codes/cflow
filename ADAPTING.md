@@ -47,7 +47,7 @@ Integrations that `why` and `recall` discover at runtime (Slack, Linear, Notion,
 
 ## Models: Grok/Opus defaults → Caio's subscriptions
 
-Caio has **Claude Max** (Opus 5.5, Fable 5.1, Sonnet 5.5, Haiku) and **ChatGPT/Codex** (GPT-6 Astra, Sol, Luna). Roles follow `~/stuff/cortex/stack/model-fit.md` ("cflow roles"): one Claude builder, a cross-lab reviewer, no Fable/Sonnet/Sol in these roles.
+Caio has **Claude Max** (Opus 5.5, Fable 5.1, Sonnet 5.5, Haiku) and **ChatGPT/Codex** (GPT-6 Astra, Sol, Luna). Roles: one Claude builder, a cross-lab reviewer, no Fable/Sonnet/Sol in these roles.
 
 | pstack default | cflow v3 default | How to call it |
 |---|---|---|
