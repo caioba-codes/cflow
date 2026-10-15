@@ -16,14 +16,17 @@ disable-model-invocation: true
 
 ## The page
 
-One self-contained HTML file with two tabs. Keep the model answer's script: it opens on **Get started** until the reader clicks **I'm set up ✓**, then always opens on **Cheat sheet**. "Show setup again" undoes that. Give `FLOW_KEY` a value unique to the workflow.
+One self-contained HTML file with two tabs. Keep the model answer's script: it opens on **Get started** until the reader clicks **I'm set up, show my cheat sheet**, then always opens on **Cheat sheet**. "Show setup again" undoes that. Give `FLOW_KEY` a value unique to the workflow.
 
 **Get started tab**
 
-1. **Prerequisites.** First "What you need": the tools, subscriptions and kinds of models the workflow is built for, and why each matters, such as "more than one Claude Max plan, because agents run in parallel" or "a ChatGPT plan, for cross-model review". Then the setup steps, split into "once per computer" and "once per repo" and lettered A, B, C…, with exact commands.
-2. **Step by step.** The canned feature, using the workflow's own phase boundaries, with one table per phase and numbered steps. Number only the human's steps. Green rows are the human gates, and each says what the human decides. Fold each run of agent steps into one collapsed agent row (a `<details>` with a short summary like "It plans the feature"), since the reader doesn't need them to use the workflow. Under the intro, answer the question a newcomer asks first in two or three sentences.
+Write it for two readers: an engineer, and a non-technical person who doesn't know what to buy or install. Use the **signal** skill's lens if it's installed.
 
-End the tab with the **I'm set up ✓** button.
+1. **What you need.** The tools, subscriptions and kinds of models, each with one short reason, such as "more than one Claude Max plan, because several agents run at once". Leave out optional extras and internal skill names.
+2. **Set up.** One numbered list split into "once per computer" and "once per project". Each item is an exact command or one plain action. One way in per step, never "say yes when offered, or run X".
+3. **One feature, start to finish.** The canned feature, one table per phase of the workflow, no header rows. Number only the human's steps, as green rows that say what to do or decide in one sentence. Fold each run of agent steps into one collapsed agent row (a `<details>` with a short summary like "It writes the plan"), and drop agent rows the reader can't act on. After the tables, answer the question a newcomer asks first in two sentences.
+
+End the tab with the **I'm set up, show my cheat sheet** button and nothing else.
 
 **Cheat sheet tab**
 
