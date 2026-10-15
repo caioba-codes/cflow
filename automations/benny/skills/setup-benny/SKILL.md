@@ -6,7 +6,7 @@ disable-model-invocation: true
 
 # Set up Benny
 
-Benny ships as a dormant automation pack inside cflow. `scripts/sync-skills.sh` installs only cflow's normal skill root; this file and the two operational files are not slash skills.
+Benny ships as a dormant automation pack inside cflow. `scripts/install.sh` installs only cflow's normal skill root; this file and the two operational files are not slash skills.
 
 The human enters setup by pointing Claude Code at the pack's `FOR_AGENTS.md`. The bootstrap flow copies the whole pack into the target repository, then reads this file directly at `.claude/automations/benny/skills/setup-benny/SKILL.md`.
 
