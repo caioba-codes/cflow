@@ -24,3 +24,8 @@ for src in "$ROOT"/skills/*/; do
 done
 for agent in "$ROOT"/agents/*.md; do [ -f "$agent" ] && run cp "$agent" "$CLAUDE_AGENTS/"; done
 [ "$DRY" = 1 ] && echo "dry run: $n cflow skills" || echo "installed $n cflow skills into $CLAUDE_SKILLS and $CODEX_SKILLS"
+missing=""
+command -v gh >/dev/null || missing="$missing gh (https://cli.github.com, then gh auth login)"$'\n'
+command -v bun >/dev/null || missing="$missing bun (https://bun.sh; agents use it to watch pull requests)"$'\n'
+command -v node >/dev/null || missing="$missing node (https://nodejs.org)"$'\n'
+[ -z "$missing" ] || printf 'Also install:\n%s' "$missing"
