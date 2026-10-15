@@ -8,7 +8,7 @@ This file is the mapping every change follows. When pstack updates upstream, re-
 
 | pstack | cflow v3 | Why |
 |---|---|---|
-| `poteto-mode` skill, `/poteto-mode` | `cflow` skill, `/cflow` | Caio's repos already point their `AGENTS.md` at `cflow` |
+| `poteto-mode` skill, `/poteto-mode` | `cflow` skill, `/cflow` | Shorter name. `/setup-cflow` turns it on in every repo |
 | `poteto-help` | `cflow-help` | same |
 | `setup-pstack` | `setup-cflow` | same |
 | `poteto-agent` | `cflow-agent` | same |
@@ -27,7 +27,7 @@ Principle skills, playbooks and every other skill keep their names.
 | `is_background` / `run_in_background: true` | Agent `run_in_background: true` |
 | agent files in a plugin's `agents/` | `~/.claude/agents/<name>.md` (frontmatter `name`, `description`, optional `model`) |
 | `AskQuestion` | `AskUserQuestion` in Claude Code; in a Claude Projects thread, the `ask_decision` card |
-| Cursor custom mode (option+enter keeps it on every turn); the mode skill's `mode`/`icon`/`color`/`reminder`/`disable-model-invocation` frontmatter | the repo's `AGENTS.md`/`CLAUDE.md` line "load the `cflow` skill first for any build, fix or plan task" (always in context). The `cflow` skill drops the mode-only frontmatter so the model may load it; its `reminder` text moves into the description. Every other skill keeps `disable-model-invocation: true` as in pstack (the `cflow` skill reads them by path) |
+| Cursor custom mode (option+enter keeps it on every turn); the mode skill's `mode`/`icon`/`color`/`reminder`/`disable-model-invocation` frontmatter | a line "load the `cflow` skill first for any build, fix or plan task" that `/setup-cflow` adds to `~/.claude/CLAUDE.md` and `~/.codex/AGENTS.md` (always in context, in every repo). The `cflow` skill drops the mode-only frontmatter so the model may load it; its `reminder` text moves into the description. Every other skill keeps `disable-model-invocation: true` as in pstack (the `cflow` skill reads them by path) |
 | Cursor `/loop` | Claude Code `/loop` (same idea) |
 | `~/.cursor/rules/pstack-models.mdc` (`alwaysApply`) | `~/.claude/cflow-models.md`, imported from `~/.claude/CLAUDE.md` with `@cflow-models.md` and from `~/.codex/AGENTS.md` |
 | `~/.cursor/projects/<slug>/agent-transcripts` | `~/.claude/projects/<slug>/*.jsonl` |

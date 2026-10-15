@@ -58,6 +58,6 @@ Pick something real but small, and describe it the way you'd describe it to a co
 
 Watch the todo list. Its first items are the matched playbook's steps copied in, the Feature playbook for this prompt. If `/cflow` skips a step, the step stays in the list with `skip: <reason>`, so you can see what it chose not to do.
 
-From here you can type normal follow-ups. To keep `/cflow` on for the whole chat, add this line to the repo's `AGENTS.md` or `CLAUDE.md`: "load the `cflow` skill first for any build, fix or plan task". That file stays in context on every turn until you remove the line. Claude Code and Codex both read it. Typing `/cflow` attaches the skill to one message, and it fades as the chat moves on.
+From here you can type normal follow-ups. cflow stays on for the whole chat, in every repo, because `/setup-cflow` added the line "load the `cflow` skill first for any build, fix or plan task" to `~/.claude/CLAUDE.md` and `~/.codex/AGENTS.md`. Claude Code and Codex both read those files on every turn.
 
 Next: [Route work through `/cflow`](./02-cflow.md).

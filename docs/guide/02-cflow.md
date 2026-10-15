@@ -82,7 +82,7 @@ continue
 keep going until done
 ```
 
-Short works because the playbook holds the structure, and the `AGENTS.md`/`CLAUDE.md` line keeps `/cflow` in context on every turn. [Set up cflow](./01-setup.md#run-your-first-task) shows how to add it. Your words carry the intent, and the skill carries the rigor.
+Short works because the playbook holds the structure, and the line `/setup-cflow` adds to `~/.claude/CLAUDE.md` keeps `/cflow` in context on every turn. Your words carry the intent, and the skill carries the rigor.
 
 ## Switch tasks with "new task"
 

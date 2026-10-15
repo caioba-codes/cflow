@@ -8,7 +8,7 @@ disable-model-invocation: true
 
 Answer the user's question about cflow, hand them a prompt they can send, and link the file the answer came from. For a help question, don't start the work. The user asked how, and a cflow run spends real tokens, so let them send the prompt.
 
-A message that asks for work, such as "use cflow to fix this bug", is not a help question. Read [`cflow`](../cflow/SKILL.md), do the work under it, and mention once that the repo's `AGENTS.md`/`CLAUDE.md` line "load the `cflow` skill first for any build, fix or plan task" keeps it on.
+A message that asks for work, such as "use cflow to fix this bug", is not a help question. Read [`cflow`](../cflow/SKILL.md), do the work under it, and mention once that the line `/setup-cflow` adds to `~/.claude/CLAUDE.md` and `~/.codex/AGENTS.md` keeps it on.
 
 This file maps questions to the skills and guide pages that hold the answers. Those files own the details. Read the file you route to before you quote it, and trust it when it disagrees with this map. The links here point into the installed plugin, which the user may not be able to open, so give the user the file's public copy: `https://github.com/caioba-codes/cflow/blob/main/` followed by its path.
 
@@ -51,7 +51,7 @@ cflow is built for Claude Code. Its skills use the Agent Skills format, so other
 Whether `/cflow` stays on depends on how the user starts it:
 
 - Enter on `/cflow` attaches the skill to one message. It fades as the chat moves on.
-- The repo's `AGENTS.md`/`CLAUDE.md` line "load the `cflow` skill first for any build, fix or plan task" keeps it in context every turn, and it stays out of casual turns.
+- The line `/setup-cflow` adds to `~/.claude/CLAUDE.md` and `~/.codex/AGENTS.md`, "load the `cflow` skill first for any build, fix or plan task", keeps it in context every turn, and it stays out of casual turns.
 - Without that line, start each new task with `/cflow`.
 
 Link [Claude Code's skills docs](https://code.claude.com/docs/en/skills) when this comes up. Mid-chat, "new task" makes the mode match a fresh playbook. `/cflow` already uses `cflow-agent` for the subagents its playbook steps spawn. To get the same style from a subagent of your own, spawn it with `subagent_type: "cflow-agent"`.
@@ -130,7 +130,7 @@ Principles are one-rule skills that `/cflow` reads and cites in its replies. The
 
 | Symptom | Fix |
 |---|---|
-| The mode stopped applying after a few turns | It was started with Enter. Add the `AGENTS.md`/`CLAUDE.md` line that loads `cflow` first, or start each task with `/cflow`. |
+| The mode stopped applying after a few turns | The line that loads `cflow` first is missing. Run `/setup-cflow` again to add it, or start each task with `/cflow`. |
 | A question got treated as the next step of the last task | Say "new task", or say the turn doesn't need the mode. |
 | A new model choice had no effect | The rule from `/setup-cflow` applies to new chats. Start one. |
 | Runs cost more than expected | See the cost paragraph under Get set up. |
