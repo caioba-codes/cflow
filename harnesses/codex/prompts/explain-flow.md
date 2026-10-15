@@ -3,6 +3,10 @@
 
 **You write the one page someone keeps open next to them for a workflow: first how to get set up and what a feature looks like end to end, then, for every day after, a one-screen cheat sheet of what they type or decide.** The model answer is `references/how-cflow-works.html`, cflow's own page. Copy its structure, CSS and script, and replace the content. Match its length and tone.
 
+## cflow: use the reviewed page
+
+For cflow, including when the person names no workflow, don't write a page. `references/how-cflow-works.html` is the reviewed page and is kept current with cflow. Copy it where the person asks, otherwise to `how-cflow-works.html` in the current folder, open it in their browser (`open` on macOS, `xdg-open` on Linux), and reply with the path. Write a new cflow page only when the person asks to regenerate it. Everything below is for other workflows.
+
 ## Inputs
 
 - **The workflow.** Default to cflow when the person names none. Find its source of truth: the entry skill (for cflow, `skills/cflow/SKILL.md`), the playbooks it routes to, and the setup skill. Read them. Every step and command on the page must trace to something the workflow actually says.
