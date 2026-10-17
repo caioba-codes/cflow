@@ -53,3 +53,21 @@ scripts/publish.sh /tmp/<slug>.html --slug <YYYY-MM-DD>-<repo>-<feature> --title
 It prints where the page lives. Put that in the feature's final report as its own line. By default it saves the page to `$EXPLAIN_DIR/<slug>/index.html` (default `~/explainers`) and prints its `file://` path.
 
 To publish somewhere else, put an executable `cflow-explain-publish` on PATH. `publish.sh` passes it the same arguments, and the hook prints the page's URL as its last line. It can upload to a server or static site, open a review task, or anything else. A matching `cflow-explain-pending` hook feeds the pending check. If a hook fails, say in the report that publishing failed and attach the HTML instead.
+
+## Notion copy
+
+When the user's instructions name a Notion database for explainers (in their `CLAUDE.md`, `AGENTS.md` or memory), also write a Notion version of every page you publish, using the Notion connector or API, after the HTML is published. Fetch the database first and fill its title property with the page's title; set other properties only when the user's instructions say what to put there. Put the published page's link in the first line of the Notion page and the Notion link in the final report next to it. Without a named database, skip this step and don't ask.
+
+The Notion version is a rewrite for reading on a phone in the Notion app, not a paste of the HTML:
+
+- **Same sections, same order, same prose.** Keep the substance; drop only what Notion can't show.
+- **Headings and short paragraphs.** `##` for sections, `###` for subsections, paragraphs of two to four sentences. A one-line summary under each section heading.
+- **Callouts** for the key ideas, definitions and edge cases the HTML marks as callouts.
+- **Diagrams** become a Mermaid code block when it's a flow between components (Notion renders it), or a numbered list of steps with the example data inline. Never an image of text, never ASCII art.
+- **Tables** of at most three narrow columns; wider ones become a bulleted list per row.
+- **Code** in code blocks with the language set, kept short; long listings go in a toggle.
+- **Long detail** (beginner background, per-file notes) goes in toggles so the page scrolls fast.
+- **Quiz:** each question as a numbered item with its options, and the answer with its explanation inside a toggle under it.
+- **Links** to PRs, files and sources stay as links.
+
+The same privacy rule applies: no secrets, tokens or private data.
