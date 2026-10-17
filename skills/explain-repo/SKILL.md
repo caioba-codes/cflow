@@ -31,7 +31,7 @@ When nothing records why something is the way it is, say so in a short "not reco
 
 Spend the effort on breadth. Use the `how` skill's approach, or parallel read-only subagents (one per top-level area), to get each area's purpose, entry points and what it talks to. Then read the sources above for the reasons. Collect, before writing:
 
-- The directory tree, two or three levels deep, from `git ls-files` (or `tree -L 3 --gitignore`), so generated, vendored and ignored files never show up. For each significant directory: its purpose, its key files, what it depends on, and what calls it.
+- The directory tree, two or three levels deep, from `git ls-tree -r --name-only origin/<default>`, so it shows the default branch and only tracked files. Untracked and ignored files never appear; tracked generated or vendored folders appear collapsed to one line. For each significant directory: its purpose, its key files, what it depends on, and what calls it.
 - Entry points: what starts the system (servers, daemons, crons, CLIs, scheduled jobs, the app's main).
 - External services and data stores, and which part talks to each.
 - Where it runs (machines, hosts, cloud) and how code gets there (deploy scripts, CI).
@@ -48,7 +48,7 @@ One long page with these sections, in order. Each section header gets a one-line
 - **The stack.** A compact table: layer, what's used, what it's for. Languages, runtimes, frameworks, data stores, external APIs, hosting, CI. Only what the repo actually uses.
 - **How the pieces work together.** Two or three end-to-end flows through the big-picture diagram (one request, one scheduled job, one deploy), each step naming the file or module that does it.
 - **What's in the repo.** The codemap, in two parts.
-  1. **The annotated tree.** The repo as an `ls`/`tree` listing, two or three levels deep, in a `<pre>` block with a short comment after every entry saying what it is ("`lobsterd.mjs   # the daemon: every WhatsApp turn starts here`"). Mark the entry points. Collapse folders nobody opens (fixtures, archives, generated code) to one line that says so. A directory whose contents follow one pattern gets the pattern and one example, not every file. The reader should be able to scan it in a minute and know what every folder is for.
+  1. **The annotated tree.** The repo as an `ls`/`tree` listing, two or three levels deep, in a `<pre>` block with a short comment after every entry saying what it is ("`server.mjs   # the HTTP server: every request starts here`"). Mark the entry points. Collapse tracked folders nobody opens (fixtures, archives, generated or vendored code) to one line that says so. A directory whose contents follow one pattern gets the pattern and one example, not every file. The reader should be able to scan it in a minute and know what every folder is for.
   2. **A card per significant directory**, in the order a reader would explore them, starting from the entry point: what it's for, the two or three files to open first and what each does, what it depends on and what depends on it, and any rule about it ("nothing here imports the personal daemon", "every file here is deployed"). State boundaries and invariants explicitly, especially ones that are an absence, since they don't show in the code.
 
   Then the conventions an agent or the owner must know: where tests go, how to deploy, the rule files.
@@ -76,6 +76,6 @@ Then write the Notion copy exactly as explain-diff's **Notion copy** section say
 ## Check before publishing
 
 1. Every "why" has a source link or a "not recorded" note.
-2. Every file path and command on the page exists on the default branch, and every top-level entry from `git ls-files` appears in the annotated tree.
+2. Every file path and command on the page exists on the default branch, and every top-level entry from `git ls-tree --name-only origin/<default>` appears in the annotated tree.
 3. Search the page for tokens, keys, passwords, phone numbers and email addresses; remove any.
 4. Open it in a browser if you can, on a laptop width and a phone width.
