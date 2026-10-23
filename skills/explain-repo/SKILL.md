@@ -71,7 +71,7 @@ Use explain-diff's publisher, so recaps land in the same place and the same revi
 
 Write `<repo>` in the slug lowercase with dots and underscores as hyphens, since the publisher only accepts `[a-z0-9-]`. Leave out `--prs` (the page covers the whole repo). Reply with the printed link on its own line, plus a one-line summary of what the page covers. If publishing fails, say so and attach the HTML instead.
 
-Then write the Notion copy exactly as explain-diff's **Notion copy** section says (`~/.claude/skills/explain-diff/SKILL.md`), when the user's instructions name a database for it, and put its link in the reply too.
+When the user has a Notion destination for explainers, write the recap there exactly as explain-diff's **Notion destination** section says (`~/.claude/skills/explain-diff/SKILL.md`), and reply with the Notion link.
 
 ## Check before publishing
 

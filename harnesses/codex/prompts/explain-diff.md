@@ -11,13 +11,13 @@
 
 ## The pending check (start of a new feature conversation)
 
-At the start of a new feature, run `scripts/pending.sh` (installed at `~/.claude/skills/explain-diff/scripts/pending.sh`) as an informational reading-list check. Each line is an explainer the user hasn't reviewed (`<title><TAB><url>`). Unreviewed pages, a missing script, or an unknown result never block planning, implementation, merges, deployments, or subsequent features. Do not ask for review acknowledgment or repeat the check as a merge gate.
+At the start of a new feature, list the explainers the user hasn't reviewed, as an informational reading-list check. When a Notion destination is set (see **Notion destination**), they are its database's rows whose review checkbox is unticked, read with the Notion connector. Otherwise run `scripts/pending.sh` (installed at `~/.claude/skills/explain-diff/scripts/pending.sh`): each line is one (`<title><TAB><url>`). Unreviewed pages, a missing script, or an unknown result never block planning, implementation, merges, deployments, or subsequent features. Do not ask for review acknowledgment or repeat the check as a merge gate.
 
 - **Anything pending.** Link each page for the user to read when convenient, then continue the authorized work.
 - **`none`.** Say nothing about it.
-- **Missing script or `unknown: ...`.** Report the limitation briefly, then continue the authorized work.
+- **Missing script, an unreachable Notion, or `unknown: ...`.** Report the limitation briefly, then continue the authorized work.
 
-Review tracking is optional. Without a `cflow-explain-pending` hook on PATH (see Publishing), the check prints `none`.
+Review tracking is optional. Without a Notion destination or a `cflow-explain-pending` hook on PATH (see Publishing), the check prints `none`.
 
 ## Writing the page
 
@@ -45,15 +45,19 @@ Write it outside the code repo, for example `/tmp/<slug>.html`.
 scripts/publish.sh /tmp/<slug>.html --slug <YYYY-MM-DD>-<repo>-<feature> --title "<Feature in plain words>" --repo <owner/repo> --prs "<n> <n> ..."
 ```
 
-It prints where the page lives. Put that in the feature's final report as its own line. By default it saves the page to `$EXPLAIN_DIR/<slug>/index.html` (default `~/explainers`) and prints its `file://` path.
+It prints where the page lives. Put that in the feature's final report as its own line. With a Notion destination, the Notion page is the link the user gets; see **Notion destination**. By default it saves the page to `$EXPLAIN_DIR/<slug>/index.html` (default `~/explainers`) and prints its `file://` path.
 
 To publish somewhere else, put an executable `cflow-explain-publish` on PATH. `publish.sh` passes it the same arguments, and the hook prints the page's URL as its last line. It can upload to a server or static site, open a review task, or anything else. A matching `cflow-explain-pending` hook feeds the pending check. If a hook fails, say in the report that publishing failed and attach the HTML instead.
 
-## Notion copy
+## Notion destination
 
-When the user's instructions name a Notion database for explainers (in their `CLAUDE.md`, `AGENTS.md` or memory), also write a Notion version of every page you publish, using the Notion connector or API, after the HTML is published. Fetch the database first and fill its title property with the page's title; set other properties only when the user's instructions say what to put there. Put the published page's link in the first line of the Notion page and the Notion link in the final report next to it. Without a named database, skip this step and don't ask.
+The user can make Notion the place their lessons live: their instructions (`CLAUDE.md`, `AGENTS.md`, project instructions or memory), or an installed skill named `explain-destination`, name a Notion database for explainers. Keep it in a skill when the user works from cloud sessions too, since those can't read files on their machine; the skill's name is the contract. Read that skill or instruction before publishing: it says which properties to fill and which checkbox means "reviewed". Without a named database, skip this section and don't ask.
 
-The Notion version is a rewrite for reading on a phone in the Notion app, not a paste of the HTML:
+With a destination set, every explainer becomes one page in that database, written with the Notion connector or API, from whatever machine the session runs on. It is a page to read, not a task: no checklist items, due dates or reminders. Leave the review checkbox unticked; the user ticks it. Fetch the database first and fill its title property with the page's title, plus the properties the destination names.
+
+Run `publish.sh` too. When it prints an `http(s)` URL, put it in the page's first line and in the property the destination names for it. A `file://` path from a machine the user isn't on goes nowhere, so leave it out. The final report links the Notion page. If the Notion connector is missing or needs authorization, say so in the report with what the user must connect, and attach the HTML instead.
+
+The Notion page is a rewrite for reading on a phone in the Notion app, not a paste of the HTML:
 
 - **Same sections, same order, same prose.** Keep the substance; drop only what Notion can't show.
 - **Headings and short paragraphs.** `##` for sections, `###` for subsections, paragraphs of two to four sentences. A one-line summary under each section heading.
