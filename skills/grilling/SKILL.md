@@ -6,6 +6,8 @@ disable-model-invocation: true
 
 Interview the user relentlessly until you reach a shared understanding. Map this as a **design tree**: every decision branches into the decisions that hang off it.
 
+Before the first round, post a short **opener**: the idea you have in mind, in a few plain sentences. Say what it is for the user of the product, what already exists and what would change, and where it would live (the screens or routes, the files or modules, the tables or data it reads and writes). Ground it in what you read, not in guesses. Keep it under ten lines so the user can correct the premise before answering anything. Then start the rounds, in the same message or the next.
+
 Work the tree in **rounds**. The **frontier** is every decision whose prerequisites are already settled: the questions you can ask _now_ without guessing at answers you haven't heard yet. Ask the whole frontier in one round: number each question and give your recommended answer. Then wait for the user's answers before the next round.
 
 Format a round like so:
