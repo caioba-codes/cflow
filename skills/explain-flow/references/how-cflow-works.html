@@ -177,7 +177,7 @@ main.wide { max-width: 1280px; }
 <div class="rows">
   <div class="row"><div class="head"><span class="num">1</span><div class="step-body">Install cflow
     <div class="cmd"><code>git clone https://github.com/caioba-codes/cflow &amp;&amp; cflow/scripts/install.sh</code><button class="copy">Copy</button></div></div></div></div>
-  <details class="row"><summary><span class="num">2</span><div class="step-body">Open Claude Code in your project and run this. Pick <b>large</b>, say yes when it offers to create a verification skill, then start a new chat
+  <details class="row"><summary><span class="num">2</span><div class="step-body">Open Claude Code in your project and run this. Pick <b>large</b>, say yes to the permission and browser changes it shows you (sign in to any dashboard it lists, once, in Chrome) and to the verification skill, then start a new chat
     <div class="cmd"><code>/setup-cflow</code><button class="copy">Copy</button></div></div></summary>
     <div class="more"><p>A verification skill is a small skill saved in your project (<code>.claude/skills/verify-&lt;app&gt;/</code>) that teaches agents to use your app like a person: how to start it, how to click or type through it, and what proves each feature works. To create it, <code>/create-verification-skill</code> reads your code and asks you only what the code can't answer. Then it tests the skill once on your app before handing it over.</p>
     <p>After that, every agent checks its change by actually using your app, not just by reading the code. It pays off more than any other step. Commit it so everyone's agents share it. In your other projects, cflow offers to create one the first time you build something there.</p></div></details>
@@ -271,7 +271,7 @@ main.wide { max-width: 1280px; }
     <div><code>/reflect</code><span>turn this chat's lessons into skill edits</span></div>
     <div><code>/automate-me</code><span>teach agents how you like to work</span></div>
     <h4>Setup</h4>
-    <div><code>/setup-cflow</code><span>change models or budget</span></div>
+    <div><code>/setup-cflow</code><span>change models or budget, or unblock agents that keep stopping</span></div>
     <div><code>/create-verification-skill</code><span>teach agents to use your app</span></div>
     <div><code>/maintain-verification-skill</code><span>keep that skill up to date</span></div>
     <div><code>/subswitch</code><span>move agents to another account at a limit</span></div>
