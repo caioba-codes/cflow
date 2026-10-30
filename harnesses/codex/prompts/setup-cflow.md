@@ -1,7 +1,7 @@
 
 # Setup cflow
 
-Write `~/.claude/cflow-models.md`, an always-imported rule (from `~/.claude/CLAUDE.md` via `@cflow-models.md`, and from `~/.codex/AGENTS.md`) that sets cflow's model per role.
+Write `~/.claude/cflow-models.md`, an always-imported rule (from `~/.claude/CLAUDE.md` via `@cflow-models.md`, and from `~/.codex/AGENTS.md`) that sets cflow's model per role. Then unblock the project (step 7) so agents stop only at cflow's own gates.
 
 ## Steps
 
@@ -60,8 +60,25 @@ interrogate reviewers: opus-xhigh, gpt-6-astra-xhigh
 
 ### 6. Confirm
 
-Tell the user the rule was written and that it applies to new sessions. Re-running this skill updates it.
+Tell the user the rule was written and that it applies to new sessions. Re-running this skill updates it, and step 7 again.
 
-### 7. Offer a verification skill (optional)
+### 7. Unblock the project
+
+Agents should carry a request end to end and stop only at cflow's own gates: the operator's merge (none under Autopilot-full) and **Always pause**. Permission prompts, auto mode blocks and browser steps handed to the operator are none of those. Run this from the project's root, show every change as a diff, and write only after the operator's yes. On a re-run, merge into what is there and never drop the operator's own entries.
+
+**(a) Find the tools.** From the repo: `fly.toml` means `fly`, `vercel.json` or `.vercel/` means `vercel`, `supabase/` means `supabase`, Stripe in code or env names means `stripe`, Tailscale or ssh hosts in scripts mean `tailscale` and `ssh <host>`, a Dockerfile means `docker`, plus the package manager's test and build commands and `gh`. From history: search this machine's transcripts for the project (`~/.claude/projects/<project-slug>/*.jsonl`) for denied or auto-mode-blocked calls and for steps handed to the operator ("type", "run this", "click", "open"), and add the tools and systems they name. Keep a tool only when `command -v` finds it or the repo clearly uses it.
+
+**(b) Repo allow rules.** Merge one narrow rule per tool into `.claude/settings.json` `permissions.allow`, such as `Bash(fly *)`, `Bash(vercel *)`, `Bash(stripe *)`. Never `Bash(*)` or an interpreter wildcard, which auto mode drops anyway. Add `permissions.deny` rules for commands that destroy data or accounts (deleting an app, volume or project, resetting a database, `vercel remove`) and anything the project's docs mark as never. Land it as a PR so every machine gets it. Cloud sessions apply these rules only when the cloud project or session has exactly one repository. If it has more, say so in one line: the rules then reach only sessions on the operator's machines.
+
+**(c) Auto mode trust on this machine.** Auto mode reads `autoMode` only from user settings (`~/.claude/settings.json`), managed settings or `--settings`, never from the repo. Merge into the user file:
+
+- `autoMode.environment`: `"$defaults"` plus one entry per system the project owns, by name (GitHub owner, Fly apps, Vercel project, Supabase project ref, Stripe account, tailnet hosts), so the classifier treats them as the operator's own.
+- `autoMode.allow`: `"$defaults"` plus using those tools against those systems for reads, logs, secrets, tests and deploys to test targets; and, after the operator asks for full autopilot, merging that program's PRs once an independent verifier PASS covers the head.
+
+Keep `"$defaults"` in every list and never edit `hard_deny`. Production deploys stay blocked by the classifier and by **Always pause**, and the operator's words for that deploy clear both. Run `claude auto-mode critique` on the result and fix what it flags. Auto mode blocks an agent from editing its own settings file even with the operator's OK, and it treats staging the merged file as the same edit. So get the operator's OK to stage it, write it to a path that survives a reboot (not a temp dir), and hand the operator one command that backs up `~/.claude/settings.json` and copies the new file over it. Each machine that runs agents for the project needs its own run of this step. Cloud sessions read no user settings, so only (b) and the organization's server-managed settings reach them. Say so in one line if the operator uses cloud sessions.
+
+**(d) A browser signed in as the operator.** **Try it yourself** needs one. On a machine with Chrome, check that Claude Code is logged in with claude.ai (an API key turns Chrome off), the Claude in Chrome extension is installed on the same organization, and `/chrome` is set to **Enabled by default**. Ask the operator to pick that setting if you can't. Then open each dashboard the project uses, from (a), in a new tab and read whether it is signed in. For each one that is not, open its login page in a tab and leave it there. Never type the operator's passwords. Ask the operator to sign in once in those tabs. That is the only step here that needs them, and their sign-ins then stay.
+
+### 8. Offer a verification skill (optional)
 
 Check whether the project has a way to drive the real app for proof (a `verify-*` skill, or an existing harness). If not, offer once: "want a project-local verification skill, so agents can drive the app the way a user does and prove changes work? I can generate one with /create-verification-skill." On yes, invoke `/create-verification-skill` (resolves wherever cflow is installed: workspace, user, or plugin). On no, move on without pushing.
