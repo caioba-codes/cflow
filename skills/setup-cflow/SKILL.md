@@ -36,7 +36,7 @@ Every real slug written must be in the detected set. `inherit-parent` and `auto`
 
 ### 5. Write the rule
 
-Write `~/.claude/cflow-models.md` with a `# budget` line with the chosen label and its target effort, and one line per role, using the same labels cflow uses. Overwrite the whole file so re-runs stay idempotent. Then make sure it is imported: `~/.claude/CLAUDE.md` needs the line `@cflow-models.md`, and `~/.codex/AGENTS.md` needs a line pointing at `~/.claude/cflow-models.md`. Add either line if missing. Also add the line `Load the cflow skill first for any build, fix or plan task.` to both files if missing. It keeps cflow in context on every turn in every repo, so nobody has to add it per project. Shape:
+Write `~/.claude/cflow-models.md` with a `# budget` line with the chosen label and its target effort, and one line per role, using the same labels cflow uses. Overwrite the whole file so re-runs stay idempotent. Then make sure it is imported: `~/.claude/CLAUDE.md` needs the line `@cflow-models.md`, and `~/.codex/AGENTS.md` needs a line pointing at `~/.claude/cflow-models.md`. Add either line if missing. Also add the line `Load the cflow skill first for any build, fix or plan task.` to both files if missing. It keeps cflow in context on every turn in every repo, so nobody has to add it per project. Add the line `Default to short replies: lead with the result in a few sentences or a short list, and expand only when asked.` to both files too, unless the file already sets a reply length. Agents then answer concisely in every repo without a per-project rule. Shape:
 
 ```
 # cflow model configuration. One line per role. Delete a line to fall back to the skill default.
