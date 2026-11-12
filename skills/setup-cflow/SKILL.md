@@ -5,7 +5,7 @@ description: Configure which models cflow uses per role and at what reasoning bu
 
 # Setup cflow
 
-Write `~/.claude/cflow-models.md`, an always-imported rule (from `~/.claude/CLAUDE.md` via `@cflow-models.md`, and from `~/.codex/AGENTS.md`) that sets cflow's model per role. Then unblock the project (step 7) so agents stop only at cflow's own gates, in cloud sessions and Claude Projects too. It starts by applying the setup agents queued because they couldn't do it themselves (step 0).
+Write `~/.claude/cflow-models.md`, an always-imported rule (from `~/.claude/CLAUDE.md` via `@cflow-models.md`, and from `~/.codex/AGENTS.md`) that sets cflow's model per role. Then unblock the project (step 7) so agents stop only at cflow's own gates, in cloud sessions and Claude Projects too. It starts by applying the setup agents queued because they couldn't do it themselves (step 0). It ends with one list of everything left for the operator, on every machine and in every project, each item with where to do it, the exact text, and how to check it (step 9).
 
 ## Steps
 
@@ -114,3 +114,21 @@ Each machine that runs agents for the project needs this, and a shared dotfiles 
 ### 8. Offer a verification skill (optional)
 
 Check whether the project has a way to drive the real app for proof (a `verify-*` skill, or an existing harness). If not, offer once: "want a project-local verification skill, so agents can drive the app the way a user does and prove changes work? I can generate one with /create-verification-skill." On yes, invoke `/create-verification-skill` (resolves wherever cflow is installed: workspace, user, or plugin). On no, move on without pushing.
+
+### 9. Finish: the operator's list
+
+Setup's job is to leave agents with nothing to stop on, so it ends with **every** remaining step that needs the operator, across all their machines and Claude Projects, not only this repo. Do everything you can first: run what you're allowed to, open the pages, stage the files, and post the connector cards. Then give one numbered list, ordered so that earlier items unblock later ones. Each item says:
+
+- **Where:** the exact place, such as `Terminal on <machine>, Claude Code switched to Manual (Shift+Tab)`, `a Remote Control session you start yourself from the Claude app on <machine>, set to Manual`, `<project> project chat`, `Chrome on <machine>, Claude extension → Extension settings`, `claude.ai connector card above`.
+- **What:** the exact text to paste or type, in a code block, or the one click. For steps that need the operator's approval prompt (step 0's protected writes, a skills sync, sudoers), that text is one prompt to paste into a Manual-mode session, and it names the files and changes so the session can apply all of them in one go.
+- **Done when:** the check that proves it worked. Run that check yourself when you can reach it.
+
+Cover each of these, and leave out the ones that are already done:
+
+1. **Each machine that runs agents:** step 0 and 7d's protected writes, a sync when the installed skills are older than the repo, the pull that brings in a merged dotfiles change, and 7h's sudoers (only if the operator said yes). A session the operator starts is the only kind whose prompts they can approve. Remote Control sessions started from a thread run in auto mode and hit the same blocks.
+2. **Chrome on each machine** (7f): Enabled by default, Automatically approve, and each sign-in that's missing.
+3. **Every Claude Project** (7g): name each project you can see, from the session context, a project listing or the operator's memory, and its status. For each one that lacks the line, give the line to paste into `[Project settings](#project-settings/instructions)` or `/setup-cflow` to run in its chat. Ask once for projects you can't see.
+4. **Connectors** (7i).
+5. **Optional, with the operator's call stated:** anything flagged as loosening a real check.
+
+End with: "When these are done, agents stop only for payments, secrets, irreversible steps and new kinds of blocks. Those new blocks get recorded, and the next `/setup-cflow` run clears them." On a re-run, check each earlier item, mark the ones that passed, and list only what's left.
