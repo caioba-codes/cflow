@@ -1,7 +1,7 @@
 
 # Setup cflow
 
-Write `~/.claude/cflow-models.md`, an always-imported rule (from `~/.claude/CLAUDE.md` via `@cflow-models.md`, and from `~/.codex/AGENTS.md`) that sets cflow's model per role. Then unblock the project (step 7) so agents stop only at cflow's own gates.
+Write `~/.claude/cflow-models.md`, an always-imported rule (from `~/.claude/CLAUDE.md` via `@cflow-models.md`, and from `~/.codex/AGENTS.md`) that sets cflow's model per role. Then unblock the project (step 7) so agents stop only at cflow's own gates, in cloud sessions and Claude Projects too.
 
 ## Steps
 
@@ -84,6 +84,11 @@ Keep `"$defaults"` in every list and never edit `hard_deny`. Deploys not cleared
 **(e) Record the routine deploys.** Add a `Routine deploys` line to the project's `CLAUDE.md` naming each entry point cleared in (b) and its targets, such as `Routine deploys (run without asking): scripts/deploy.sh to home-server.` cflow's **Always pause** reads it, and the classifier reads `CLAUDE.md` too.
 
 **(f) A browser signed in as the operator.** **Try it yourself** needs one. On a machine with Chrome, check that Claude Code is logged in with claude.ai (an API key turns Chrome off), the Claude in Chrome extension is installed on the same organization, and `/chrome` is set to **Enabled by default**. Ask the operator to pick that setting if you can't. Then open each dashboard the project uses, from (a), in a new tab and read whether it is signed in. For each one that is not, open its login page in a tab and leave it there. Never type the operator's passwords. Ask the operator to sign in once in those tabs. That is the only step here that needs them, and their sign-ins then stay.
+
+**(g) Cloud sessions and Claude Projects.** Step 5's lines live in `~/.claude` and `~/.codex` on this machine, so cloud sessions never load them: a cloud session sees only the repo it clones and, in a Claude Project, the project's instructions. Carry the rule to both.
+
+- **Repo.** Add these lines to the repo's `CLAUDE.md` (and to `AGENTS.md` when it holds the rules rather than pointing at `CLAUDE.md`), creating the file if missing and skipping lines already there: `Load the cflow skill first for any build, fix or plan task.` and `Never ask <operator> to run a command or click through a site; use a Remote Control session on <machine> or Claude in Chrome instead. Don't type their secrets; open the page so they only paste them.` Fill in the operator's name and the machine their Remote Control sessions run on, and ask once if you can't tell. Land it in the PR from (c). In a Claude Project, do the same for every repository the project lists, one PR per repo. The cflow skill must also reach cloud sessions (account skills or a plugin). If `cflow` isn't in a cloud session's skill list, say so in one line.
+- **Claude Project instructions.** When this runs inside a Claude Project, every thread should get the rule from the project's instructions. Check them first (they are in the session context) and stop if they already apply cflow. A thread can't edit them, so a thread sends the coordinator one `message_coordinator` asking it to add this line, with the operator's message attached: `Apply cflow (the /cflow skill) in every thread. Never ask <operator> to run a command or click through a site; use a Remote Control session on <machine> or Claude in Chrome instead. Threads don't type secrets for them, but can open the page so they only paste them.` The coordinator adds it itself. If neither can, give the operator the line and a `[Project settings](#project-settings/instructions)` link, as the one paste this step needs from them. Outside a Claude Project, skip this and say in one line that rerunning `/setup-cflow` inside a project adds it there.
 
 ### 8. Offer a verification skill (optional)
 
