@@ -11,12 +11,12 @@ Write `~/.claude/cflow-models.md`, an always-imported rule (from `~/.claude/CLAU
 
 ### 0. Apply pending setup
 
-Agents queue each one-time setup they can't do themselves, as the `cflow` skill says, so this run can do it with the operator present. Read every queue you can reach: `~/.config/cflow/pending-setup.md` on this machine (and on each machine you reach over ssh or Remote Control), and in a Claude Project `/mnt/project-files/cflow-setup/pending.md`. Each entry names the machine, what stopped, and the exact change. Show them all at once, merged with what step 7 finds, and ask for one yes.
+Agents record each one-time setup they can't do themselves, as the `cflow` skill says, so this run can do it with the operator present. Collect the stops: the blocked and denied calls in this machine's session transcripts (step 7a's search, across every project) and, in a Claude Project or whenever it is reachable, `/mnt/project-files/cflow-setup/pending.md`. Turn each into the change that clears it, for the right reason, and show them all at once, merged with what step 7 finds. Ask for one yes.
 
-- **Writes auto mode never lets an agent make** (`~/.claude/settings.json` and the file it links to, other protected paths such as shell rc files, `/etc/sudoers.d/`). They need the operator's own approval prompt, so they happen only in a run on that machine. If this session runs in auto mode, ask the operator to press Shift+Tab to Manual for this step; each write then shows a prompt they approve, and they switch back after. A cloud thread can't apply them: leave them queued and tell the operator in one line to run `/setup-cflow` once on that machine.
+- **Writes auto mode never lets an agent make** (`~/.claude/settings.json` and the file it links to, other protected paths such as shell rc files, `/etc/sudoers.d/`). They need the operator's own approval prompt, so they happen only in a run on that machine. If this session runs in auto mode, ask the operator to press Shift+Tab to Manual for this step; each write then shows a prompt they approve, and they switch back after. A cloud thread can't apply them: leave them recorded and tell the operator in one line to run `/setup-cflow` once on that machine, in a terminal session switched to Manual.
 - **Steps that need the operator's hands** (a sudo password, a site sign-in, a browser extension setting, a connector sign-in). Do every part you can first, open the page or stage the command, then list what's left at the end of the run, one action each.
 
-Remove each applied entry from its queue. Leave the rest with a one-line reason.
+Remove each applied entry from the project queue. Leave the rest with a one-line reason. If the installed cflow skills are older than the repo (no step 0), sync them first in this Manual-mode run, since auto mode blocks an agent installing its own skills.
 
 ### 1. Detect available models
 
@@ -94,7 +94,7 @@ Agents should carry a request end to end and stop only at cflow's own gates: the
 
 Keep `"$defaults"` in every list and never edit `hard_deny`. Deploys not cleared in (b) stay blocked by the classifier and by **Always pause**, and the operator's words for that deploy clear both. Run `claude auto-mode critique` on the result and fix what it flags.
 
-Apply it without handing the operator a command. Auto mode never lets an agent write its own settings file, nor the file a symlinked one points to, nor a copy of it in a dotfiles clone, even when the operator's message names the edit (tested 2026-11-12). So write it the way step 0 writes protected files: on the operator's machine, through their approval prompt in Manual mode. A cloud thread can't do that, so it queues the entries for the operator's next `/setup-cflow` on that machine (step 0) and tells them once. If the settings file is a symlink into a dotfiles repo, commit the result there after the write, so other machines get it on their next pull.
+Apply it without handing the operator a command. Auto mode never lets an agent write its own settings file, nor the file a symlinked one points to, nor a copy of it in a dotfiles clone, even when the operator's message names the edit (tested 2026-11-12). So write it the way step 0 writes protected files: on the operator's machine, through their approval prompt in Manual mode. A cloud thread can't do that, so it records the stop for the operator's next `/setup-cflow` on that machine (step 0) and tells them once. If the settings file is a symlink into a dotfiles repo, commit the result there after the write, so other machines get it on their next pull.
 
 Each machine that runs agents for the project needs this, and a shared dotfiles repo covers every machine that pulls it. Cloud sessions read no user settings, so only (c) and the organization's server-managed settings reach them. Say so in one line if the operator uses cloud sessions.
 
