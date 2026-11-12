@@ -121,7 +121,7 @@ Setup's job is to leave agents with nothing to stop on, so it ends with **every*
 
 - **Where:** the exact place, such as `Terminal on <machine>, Claude Code switched to Manual (Shift+Tab)`, `a Remote Control session you start yourself from the Claude app on <machine>, set to Manual`, `<project> project chat`, `Chrome on <machine>, Claude extension → Extension settings`, `claude.ai connector card above`.
 - **What:** the exact text to paste or type, in a code block, or the one click. For steps that need the operator's approval prompt (step 0's protected writes, a skills sync, sudoers), that text is one prompt to paste into a Manual-mode session, and it names the files and changes so the session can apply all of them in one go.
-- **Done when:** the check that proves it worked. Run that check yourself when you can reach it.
+Keep the check for each item to yourself. The operator never checks anything.
 
 Cover each of these, and leave out the ones that are already done:
 
@@ -131,4 +131,4 @@ Cover each of these, and leave out the ones that are already done:
 4. **Connectors** (7i).
 5. **Optional, with the operator's call stated:** anything flagged as loosening a real check.
 
-End with: "When these are done, agents stop only for payments, secrets, irreversible steps and new kinds of blocks. Those new blocks get recorded, and the next `/setup-cflow` run clears them." On a re-run, check each earlier item, mark the ones that passed, and list only what's left.
+Ask the operator to reply "done" when they've worked through the list. Then verify every item yourself: read the settings file and `claude auto-mode config` on each machine (over ssh or a Remote Control session), run a harmless call that used to be blocked and confirm it goes through, check that the installed skills match the repo, open each signed-in page in Chrome, read the project instructions from the session context or the coordinator, and check that each connector shows as connected. Give a new list with only the items that failed, each with what went wrong and the corrected step. Repeat until nothing is left. Then say: "Setup is done. Agents now stop only for payments, secrets, irreversible steps and new kinds of blocks. Those new blocks get recorded, and the next `/setup-cflow` run clears them." On a re-run, check every earlier item the same way and list only what's left.
