@@ -5,9 +5,18 @@ description: Configure which models cflow uses per role and at what reasoning bu
 
 # Setup cflow
 
-Write `~/.claude/cflow-models.md`, an always-imported rule (from `~/.claude/CLAUDE.md` via `@cflow-models.md`, and from `~/.codex/AGENTS.md`) that sets cflow's model per role. Then unblock the project (step 7) so agents stop only at cflow's own gates, in cloud sessions and Claude Projects too.
+Write `~/.claude/cflow-models.md`, an always-imported rule (from `~/.claude/CLAUDE.md` via `@cflow-models.md`, and from `~/.codex/AGENTS.md`) that sets cflow's model per role. Then unblock the project (step 7) so agents stop only at cflow's own gates, in cloud sessions and Claude Projects too. It starts by applying the setup agents queued because they couldn't do it themselves (step 0).
 
 ## Steps
+
+### 0. Apply pending setup
+
+Agents queue each one-time setup they can't do themselves, as the `cflow` skill says, so this run can do it with the operator present. Read every queue you can reach: `~/.config/cflow/pending-setup.md` on this machine (and on each machine you reach over ssh or Remote Control), and in a Claude Project `/mnt/project-files/cflow-setup/pending.md`. Each entry names the machine, what stopped, and the exact change. Show them all at once, merged with what step 7 finds, and ask for one yes.
+
+- **Writes auto mode never lets an agent make** (`~/.claude/settings.json` and the file it links to, other protected paths such as shell rc files, `/etc/sudoers.d/`). They need the operator's own approval prompt, so they happen only in a run on that machine. If this session runs in auto mode, ask the operator to press Shift+Tab to Manual for this step; each write then shows a prompt they approve, and they switch back after. A cloud thread can't apply them: leave them queued and tell the operator in one line to run `/setup-cflow` once on that machine.
+- **Steps that need the operator's hands** (a sudo password, a site sign-in, a browser extension setting, a connector sign-in). Do every part you can first, open the page or stage the command, then list what's left at the end of the run, one action each.
+
+Remove each applied entry from its queue. Leave the rest with a one-line reason.
 
 ### 1. Detect available models
 
@@ -85,10 +94,7 @@ Agents should carry a request end to end and stop only at cflow's own gates: the
 
 Keep `"$defaults"` in every list and never edit `hard_deny`. Deploys not cleared in (b) stay blocked by the classifier and by **Always pause**, and the operator's words for that deploy clear both. Run `claude auto-mode critique` on the result and fix what it flags.
 
-Apply it without handing the operator a command. Auto mode never lets an agent write its own settings file, nor the file a symlinked one points to, so the change goes through a review the operator does once per change:
-
-- **Settings in a dotfiles repo** (`~/.claude/settings.json` is a symlink into a git checkout with a remote). Make the change as a PR to that repo, from a fresh clone or a cloud session rather than the checkout the symlink points to. Auto mode blocks writing even that copy as **Self-Modification** unless the operator's own message names the edit, and a general "full autopilot" doesn't count. So batch every settings change from this run into one PR, show the entries, and ask once for a message naming the file and each change (for example `Edit claude/.claude/settings.json in <owner>/dotfiles: allow <x>, allow <y>. Open the PR.`). Never route around the block with another tool or file. The operator reviews and merges it; never merge it yourself, even under full autopilot, because a self-merged settings PR is an agent widening its own permissions. If the full-autopilot merge entry in `autoMode.allow` doesn't already exclude PRs that change the settings file, add that exclusion in the same PR. The machine picks up the merge on its own: offer once to add a login job (a launchd agent on macOS, a systemd user timer on Linux) that runs `git -C <checkout> pull --ff-only` every 15 minutes and leaves a dirty or diverged checkout alone. Installing that job is itself a persistence change, so it needs the operator's yes like any other change in this step. Then this route needs one merge per settings change and nothing typed.
-- **No dotfiles repo.** Offer to make one (a private repo with the settings file, symlinked back), since that turns every later settings change into a PR. If the operator declines, write the merged file to a path that survives a reboot and hand them one command that backs up `~/.claude/settings.json` and copies the new file over it.
+Apply it without handing the operator a command. Auto mode never lets an agent write its own settings file, nor the file a symlinked one points to, nor a copy of it in a dotfiles clone, even when the operator's message names the edit (tested 2026-11-12). So write it the way step 0 writes protected files: on the operator's machine, through their approval prompt in Manual mode. A cloud thread can't do that, so it queues the entries for the operator's next `/setup-cflow` on that machine (step 0) and tells them once. If the settings file is a symlink into a dotfiles repo, commit the result there after the write, so other machines get it on their next pull.
 
 Each machine that runs agents for the project needs this, and a shared dotfiles repo covers every machine that pulls it. Cloud sessions read no user settings, so only (c) and the organization's server-managed settings reach them. Say so in one line if the operator uses cloud sessions.
 
