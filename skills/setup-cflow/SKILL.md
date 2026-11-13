@@ -1,11 +1,22 @@
 ---
 name: setup-cflow
-description: Configure which models cflow uses per role and at what reasoning budget, and unblock the project so agents run requests end to end (permission rules for the tools it uses, auto mode trust, a signed-in browser, the cflow rule in each repo and Claude Project so cloud sessions follow it). Use for /setup-cflow, "configure cflow models", "cflow budget", changing cflow's model choices, or agents stopping on permission prompts or auto mode blocks, or cloud threads not following cflow.
+description: Configure which models cflow uses per role and at what reasoning budget, and unblock the project so agents run requests end to end (permission rules for the tools it uses, auto mode trust, a signed-in browser, the cflow rule in each repo and Claude Project so cloud sessions follow it). Safe and quick to rerun anytime to pick up cflow changes. Use for /setup-cflow, rerunning or updating cflow setup in a repo, "configure cflow models", "cflow budget", changing cflow's model choices, or agents stopping on permission prompts or auto mode blocks, or cloud threads not following cflow.
 ---
 
 # Setup cflow
 
-Write `~/.claude/cflow-models.md`, an always-imported rule (from `~/.claude/CLAUDE.md` via `@cflow-models.md`, and from `~/.codex/AGENTS.md`) that sets cflow's model per role. Then unblock the project (step 7) so agents stop only at cflow's own gates, in cloud sessions and Claude Projects too, and move threads still waiting on CI back to Working (7j). It starts by applying the setup agents queued because they couldn't do it themselves (step 0) and ends by syncing the operator's skills (step 9). It ends with one list of everything left for the operator, on every machine and in every project, each item with where to do it, the exact text, and how to check it (step 9).
+Write `~/.claude/cflow-models.md`, an always-imported rule (from `~/.claude/CLAUDE.md` via `@cflow-models.md`, and from `~/.codex/AGENTS.md`) that sets cflow's model per role. Then unblock the project (step 7) so agents stop only at cflow's own gates, in cloud sessions and Claude Projects too, and move threads still waiting on CI back to Working (7j). It starts by applying the setup agents queued because they couldn't do it themselves (step 0), then syncs the operator's skills (step 9), and ends with one list of everything left for the operator, on every machine and in every project, each item with where to do it and the exact text (step 10). It is safe to rerun anytime, and a rerun is quick (see Rerun).
+
+## Rerun
+
+A repo is already set up when `~/.claude/cflow-models.md` has a `# budget` line and the repo's `CLAUDE.md` has the cflow line from 7g. Then this run is a rerun, usually to pick up what changed in cflow since. A rerun asks nothing already answered, and the operator's words bring back any question they want to revisit ("change the budget").
+
+- **Step 3** keeps the saved budget and roles without asking. It adds a line, at the saved budget's effort, only for a role that is new since the last run, and asks only about a slug that is no longer detected.
+- **Step 7b** asks only about deploy entry points not named in the `Routine deploys` or `Not routine` lines of `CLAUDE.md`.
+- **Steps 7h and 8** are skipped, since the first run made those offers.
+- **Everything else** runs as usual and writes only the difference between what is there and what the current steps produce. Show those changes together and ask one yes for all of them. With none, say the setup is current.
+
+Then sync skills (step 9) and end with the operator's list (step 10). When this machine's `~/.claude/settings.json` lacks 7d's entries, step 0 and 7d still try the write, and if it is blocked, that item leads the list.
 
 ## Steps
 
@@ -98,7 +109,7 @@ Apply it without handing the operator a command. Auto mode never lets an agent w
 
 Each machine that runs agents for the project needs this, and a shared dotfiles repo covers every machine that pulls it. Cloud sessions read no user settings, so only (c) and the organization's server-managed settings reach them. Say so in one line if the operator uses cloud sessions.
 
-**(e) Record the routine deploys.** Add a `Routine deploys` line to the project's `CLAUDE.md` naming each entry point cleared in (b) and its targets, such as `Routine deploys (run without asking): scripts/deploy.sh to home-server; scripts/restart.sh on home-server.` cflow's **Always pause** reads it, and the classifier reads `CLAUDE.md` too.
+**(e) Record the routine deploys.** Add a `Routine deploys` line to the project's `CLAUDE.md` naming each entry point cleared in (b) and its targets, such as `Routine deploys (run without asking): scripts/deploy.sh to home-server; scripts/restart.sh on home-server.` Name the ones declined in (b) on a `Not routine (ask first):` line, so a rerun doesn't ask again. cflow's **Always pause** reads both, and the classifier reads `CLAUDE.md` too.
 
 **(f) A browser signed in as the operator.** **Try it yourself** needs one. On a machine with Chrome, check that Claude Code is logged in with claude.ai (an API key turns Chrome off), the Claude in Chrome extension is installed on the same organization, and `/chrome` is set to **Enabled by default**. Ask the operator to pick that setting if you can't. In the extension's settings, the permission mode should be **Automatically approve**, so safety checks review each action instead of the operator; ask the operator to pick it if you can't. Then open each dashboard the project uses, from (a), plus the operator's own infrastructure accounts named in (d) (network admin such as Tailscale, DNS, cloud consoles, the code host), in a new tab and read whether it is signed in. For each one that is not, open its login page in a tab and leave it there. Never type the operator's passwords. Ask the operator to sign in once in those tabs, and to choose **Always allow actions on this site** the first time Claude acts on each. Those are the only steps here that need them, and they stay. Claude in Chrome still asks before changing permission or access settings on a site, granting an authorization, or entering sensitive information, in every mode. Say in one line which planned browser steps fall under that, so the operator expects them.
 
@@ -117,12 +128,16 @@ Each machine that runs agents for the project needs this, and a shared dotfiles 
 
 Check whether the project has a way to drive the real app for proof (a `verify-*` skill, or an existing harness). If not, offer once: "want a project-local verification skill, so agents can drive the app the way a user does and prove changes work? I can generate one with /create-verification-skill." On yes, invoke `/create-verification-skill` (resolves wherever cflow is installed: workspace, user, or plugin). On no, move on without pushing.
 
-### 9. Finish: the operator's list
+### 9. Sync skills
+
+If a `sync-skills` skill is installed, run it, so every skill (cflow's included) reaches the operator's machines, cloud repos and claude.ai account, and cloud threads find them. Without one, skip this and say so in one line. If auto mode blocks the sync, it goes on step 10's list for this machine.
+
+### 10. Finish: the operator's list
 
 Setup's job is to leave agents with nothing to stop on, so it ends with **every** remaining step that needs the operator, across all their machines and Claude Projects, not only this repo. Do everything you can first: run what you're allowed to, open the pages, stage the files, and post the connector cards. Then give one numbered list, ordered so that earlier items unblock later ones. Each item says:
 
 - **Where:** the exact place, such as `Terminal on <machine>, Claude Code switched to Manual (Shift+Tab)`, `a Remote Control session you start yourself from the Claude app on <machine>, set to Manual`, `<project> project chat`, `Chrome on <machine>, Claude extension → Extension settings`, `claude.ai connector card above`.
-- **What:** the exact text to paste or type, in a code block, or the one click. For steps that need the operator's approval prompt (step 0's protected writes, a skills sync, sudoers), that text is one prompt to paste into a Manual-mode session, and it names the files and changes so the session can apply all of them in one go.
+- **What:** the exact text to paste or type, in a code block, or the one click. For step 0 and 7d's protected writes and a blocked skills sync, the text is `/setup-cflow` in a terminal Claude Code session on that machine switched to Manual (Shift+Tab): that rerun finds what is still missing and applies it through the operator's approval prompts. Say in one line why an approval sent in chat isn't enough (7d). For sudoers, it is the single command from 7h with the file contents.
 Keep the check for each item to yourself. The operator never checks anything.
 
 Cover each of these, and leave out the ones that are already done:
@@ -135,6 +150,3 @@ Cover each of these, and leave out the ones that are already done:
 
 Ask the operator to reply "done" when they've worked through the list. Then verify every item yourself: read the settings file and `claude auto-mode config` on each machine (over ssh or a Remote Control session), run a harmless call that used to be blocked and confirm it goes through, check that the installed skills match the repo, open each signed-in page in Chrome, read the project instructions from the session context or the coordinator, and check that each connector shows as connected. Give a new list with only the items that failed, each with what went wrong and the corrected step. Repeat until nothing is left. Then say: "Setup is done. Agents now stop only for payments, secrets, irreversible steps and new kinds of blocks. Those new blocks get recorded, and the next `/setup-cflow` run clears them." On a re-run, check every earlier item the same way and list only what's left.
 
-### 9. Sync skills
-
-Last, if a `sync-skills` skill is installed, run it, so every skill (cflow's included) reaches the operator's machines, cloud repos and claude.ai account, and cloud threads find them. Without one, skip this and say so in one line.
