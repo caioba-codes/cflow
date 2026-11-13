@@ -5,7 +5,7 @@ description: Configure which models cflow uses per role and at what reasoning bu
 
 # Setup cflow
 
-Write `~/.claude/cflow-models.md`, an always-imported rule (from `~/.claude/CLAUDE.md` via `@cflow-models.md`, and from `~/.codex/AGENTS.md`) that sets cflow's model per role. Then unblock the project (step 7) so agents stop only at cflow's own gates, in cloud sessions and Claude Projects too, and move threads still waiting on CI back to Working (7j). It starts by applying the setup agents queued because they couldn't do it themselves (step 0). It ends with one list of everything left for the operator, on every machine and in every project, each item with where to do it, the exact text, and how to check it (step 9).
+Write `~/.claude/cflow-models.md`, an always-imported rule (from `~/.claude/CLAUDE.md` via `@cflow-models.md`, and from `~/.codex/AGENTS.md`) that sets cflow's model per role. Then unblock the project (step 7) so agents stop only at cflow's own gates, in cloud sessions and Claude Projects too, and move threads still waiting on CI back to Working (7j). It starts by applying the setup agents queued because they couldn't do it themselves (step 0) and ends by syncing the operator's skills (step 9). It ends with one list of everything left for the operator, on every machine and in every project, each item with where to do it, the exact text, and how to check it (step 9).
 
 ## Steps
 
@@ -134,3 +134,7 @@ Cover each of these, and leave out the ones that are already done:
 5. **Optional, with the operator's call stated:** anything flagged as loosening a real check.
 
 Ask the operator to reply "done" when they've worked through the list. Then verify every item yourself: read the settings file and `claude auto-mode config` on each machine (over ssh or a Remote Control session), run a harmless call that used to be blocked and confirm it goes through, check that the installed skills match the repo, open each signed-in page in Chrome, read the project instructions from the session context or the coordinator, and check that each connector shows as connected. Give a new list with only the items that failed, each with what went wrong and the corrected step. Repeat until nothing is left. Then say: "Setup is done. Agents now stop only for payments, secrets, irreversible steps and new kinds of blocks. Those new blocks get recorded, and the next `/setup-cflow` run clears them." On a re-run, check every earlier item the same way and list only what's left.
+
+### 9. Sync skills
+
+Last, if a `sync-skills` skill is installed, run it, so every skill (cflow's included) reaches the operator's machines, cloud repos and claude.ai account, and cloud threads find them. Without one, skip this and say so in one line.
