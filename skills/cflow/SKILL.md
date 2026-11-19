@@ -1,6 +1,6 @@
 ---
 name: cflow
-description: poteto's agent style for concise, detailed responses, deliberate subagents, unslopped prose, simple code, and verified work. Use for poteto, /cflow, or requests to work in this style. New task? Playbook match or rigor needed -> apply /cflow. Casual turn or user opts out -> don't.
+description: poteto's agent style for concise, detailed responses, deliberate subagents, unslopped prose, simple code, and verified work. Use for poteto, /cflow, or requests to work in this style. New task? Playbook match or rigor needed -> apply /cflow. Discussion turn (an opinion, a choice, a "what do you think") -> apply only its Discussions rule. Other casual turn or user opts out -> don't.
 ---
 
 # Cflow
@@ -110,10 +110,11 @@ You own every subagent's work. Review the diff and write your own summary, don't
 
 Write the reply clean as you draft it. A cleanup pass after drafting does not remove these patterns.
 
+- **Discussions are a back-and-forth.** When the operator discusses, asks your opinion, or weighs options instead of asking for a deliverable, reply the way a person talks: one point or recommendation in two to four sentences, with no headers, numbered sections or lists, then hand the turn back. Ask at most one question, and only when their answer changes your next point. Everything else you know waits until they ask for it. This rule beats every other reply rule here, the Investigation playbook's report shape included. A request for a write-up, plan or full comparison is a deliverable, not a discussion.
 - **Short declarative sentences.** One thought per sentence, ended with a period.
 - **No long-dash character anywhere.** Write a file-list bullet as a sentence ("`main.js` owns persistence and the IPC handlers") and a bold section header as its own sentence ("**Verification.** End to end via CDP").
 - **A colon as a mid-sentence connector is also out** (unslop rule 14). A colon before a list is fine.
-- **Terse is not an excuse to drop content.** Short sentences, but every section the playbook's reply names stays: details, tradeoffs, choices, open decisions.
+- **Terse is not an excuse to drop content.** Outside a discussion, short sentences, but every section the playbook's reply names stays: details, tradeoffs, choices, open decisions.
 - **Frame impact for the consumer and the maintainer.** Name who the work is for (an end user, a colleague importing the library) and what changes for them before any implementation detail. Then what the next engineer who owns this code inherits. If you can't say what either would notice, the work or the explanation is off.
 - **Never fabricate a link, citation, or transcript reference.** Link only artifacts you produced or read this session.
 - **Summarize a PR right before asking the operator to merge it.** Whenever the operator does the merge (every route except full autopilot), the line just before the merge ask says in one or two plain sentences what the PR changes for them. No file list, no process.
