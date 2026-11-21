@@ -83,7 +83,7 @@ interrogate reviewers: opus-xhigh, gpt-6-astra-xhigh
 
 ### 6. Confirm
 
-Tell the user the rule was written and that it applies to new sessions. Re-running this skill updates it, and step 7 again.
+Nothing to tell the operator here. The rule applies to new sessions; the final reply (step 10) mentions it only if it needs them.
 
 ### 7. Unblock the project
 
@@ -131,10 +131,12 @@ If a `sync-skills` skill is installed, run it, so every skill (cflow's included)
 
 ### 10. Finish: the operator's list
 
-Setup's job is to leave agents with nothing to stop on, so it ends with **every** remaining step that needs the operator, across all their machines and Claude Projects, not only this repo. Do everything you can first: run what you're allowed to, open the pages, stage the files, and post the connector cards. Then give one numbered list, ordered so that earlier items unblock later ones. Each item says:
+Setup's job is to leave agents with nothing to stop on, so it ends with **every** remaining step that needs the operator, across all their machines and Claude Projects, not only this repo. Do everything you can first: run what you're allowed to, open the pages, stage the files, and post the connector cards.
 
-- **Where:** the exact place, such as `Terminal on <machine>, Claude Code switched to Manual (Shift+Tab)`, `a Remote Control session you start yourself from the Claude app on <machine>, set to Manual`, `<project> project chat`, `Chrome on <machine>, Claude extension → Extension settings`, `claude.ai connector card above`.
-- **What:** the exact text to paste or type, in a code block, or the one click. For step 0 and 7d's protected writes and a blocked skills sync, the text is `/setup-cflow` in a terminal Claude Code session on that machine switched to Manual (Shift+Tab): that rerun finds what is still missing and applies it through the operator's approval prompts. Say in one line why an approval sent in chat isn't enough (7d). For sudoers, it is the single command from 7h with the file contents.
+**The final reply is only that list.** No summary of what you did or found, no reasons why something was blocked, no critique results, no notes on what was already current, no PR links unless one needs the operator's click. Every "say so in one line" from earlier steps lands here only if it is an action for the operator; otherwise drop it. With nothing left, the whole reply is `Setup is done. Nothing for you to do.` Give the list numbered, ordered so that earlier items unblock later ones, one line per item plus its code block:
+
+- **Where:** the exact place, spelled out so they can follow it without thinking, such as `Terminal on <machine>: cd <path>, run claude, press Shift+Tab until it says Manual, then type`, `a Remote Control session you start yourself from the Claude app on <machine>, set to Manual`, `<project> project chat`, `Chrome on <machine>, Claude extension → Extension settings`, `claude.ai connector card above`.
+- **What:** the exact text to paste or type, in a code block, or the one click. For step 0 and 7d's protected writes and a blocked skills sync, the text is `/setup-cflow` in a terminal Claude Code session on that machine switched to Manual (Shift+Tab): that rerun finds what is still missing and applies it through the operator's approval prompts. For sudoers, it is the single command from 7h with the file contents.
 Keep the check for each item to yourself. The operator never checks anything.
 
 Cover each of these, and leave out the ones that are already done:
